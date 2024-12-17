@@ -1,9 +1,10 @@
 package com.example.capstone3.Model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.*;
-
-import java.util.Set;
 
 @Entity
 @Data
@@ -16,7 +17,4 @@ public class Stadium {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "stadium")
-    private Set<VolunteerRating>volunteerRatings;
 }

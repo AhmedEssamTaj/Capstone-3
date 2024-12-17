@@ -1,10 +1,13 @@
 package com.example.capstone3.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
+
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -15,6 +18,34 @@ import lombok.*;
 public class Training {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @NotEmpty
+    @Size(min = 3, max = 100)
+    @Column(columnDefinition = "varchar(100) not null")
+    private String title;
+
+    @NotEmpty
+    @Column(columnDefinition = "text not null")
+    private String description;
+
+    @NotNull
+    @Column(columnDefinition = "date not null")
+    private LocalDate startDate;
+
+    @NotNull
+    @Column(columnDefinition = "date not null")
+    private LocalDate endDate;
+
+    @Column(columnDefinition = "boolean not null default false")
+    private boolean isCompleted;
+
+    @ManyToOne
+    @JoinColumn(name = "volunteer_id", referencedColumnName = "id")
+    private Volunteer volunteer;
+
+    @OneToOne
+    @JsonIgnore
+    @MapsId
+    private Trainer trainer;
 }
