@@ -17,26 +17,26 @@ public class Trainer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotEmpty
+    @NotEmpty(message = "name cannot be empty")
     @Size(min = 3, max = 50)
     @Column(columnDefinition = "varchar(50) not null")
     private String name;
 
     @Email
-    @NotEmpty
+    @NotEmpty(message = "email cannot be empty")
     @Column(columnDefinition = "varchar(50) not null unique")
     private String email;
 
-    @NotEmpty
+    @NotEmpty(message = "phoneNumber cannot be empty")
     @Pattern(regexp = "\\d{10}", message = "Phone number must be 10 digits")
     @Column(columnDefinition = "varchar(10) not null unique")
     private String phoneNumber;
 
-    @NotEmpty
+    @NotEmpty(message = "role cannot be empty")
     @Column(columnDefinition = "varchar(50) not null")
     private String role;
 
-    @NotNull
+    @NotNull(message ="experienceYears cannot be empty" )
     @Min(1)
     @Column(columnDefinition = "int not null")
     private Integer experienceYears;

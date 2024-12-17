@@ -1,12 +1,9 @@
 package com.example.capstone3.Service;
 
 import com.example.capstone3.ApiResponse.ApiException;
-import com.example.capstone3.Model.Event;
-import com.example.capstone3.Model.Volunteer;
-import com.example.capstone3.Model.VolunteerApplication;
-import com.example.capstone3.Repository.EventRepository;
-import com.example.capstone3.Repository.VolunteerApplicationRepository;
-import com.example.capstone3.Repository.VolunteerRepository;
+import com.example.capstone3.DTO.RoleDTO;
+import com.example.capstone3.Model.*;
+import com.example.capstone3.Repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +14,11 @@ import java.util.List;
 public class VolunteerApplicationService {
 
     private final VolunteerApplicationRepository volunteerApplicationRepository;
+
     private final VolunteerRepository volunteerRepository;
     private final EventRepository eventRepository;
+    private final RoleRepository roleRepository;
+    private final AttendanceRepository attendanceRepository;
 
     // method to get ALL the applications
     public List<VolunteerApplication> getAllVolunteerApplications() {
@@ -26,7 +26,7 @@ public class VolunteerApplicationService {
     }
 
     // method to get all the applications by a volunteer
-    public List <VolunteerApplication> getVolunteerApplications(Integer volunteerId) {
+    public List<VolunteerApplication> getVolunteerApplications(Integer volunteerId) {
         return volunteerApplicationRepository.findVolunteerApplicationByVolunteerId(volunteerId);
     }
 
@@ -63,6 +63,40 @@ public class VolunteerApplicationService {
         volunteerApplicationRepository.delete(volunteerApplication);
     }
 
+
+    // method to accept application
+    public void acceptVolunteerApplication(Integer volunteerApplicationId, RoleDTO roleDTO) {
+        VolunteerApplication volunteerApplication = volunteerApplicationRepository.findVolunteerApplicationById(volunteerApplicationId);
+        if (volunteerApplication == null) {
+            throw new ApiException("Volunteer application not found");
+        }
+        volunteerApplication.setStatus("accepted");
+        volunteerApplicationRepository.save(volunteerApplication);
+        Role role = new Role();
+        role.setName(roleDTO.getName());
+        role.setDescription(roleDTO.getDescription());
+        role.setVolunteer(volunteerApplication.getVolunteer());
+        role.setEvent(volunteerApplication.getEvent());
+        roleRepository.save(role);
+
+        Attendance attendance = new Attendance();
+        attendance.setVolunteer(volunteerApplication.getVolunteer());
+        attendance.setEvent(volunteerApplication.getEvent());
+
+        attendanceRepository.save(attendance);
+
+    }
+
+    // method to reject application
+    public void rejcetApplication(Integer volunteerApplicationId) {
+
+        VolunteerApplication volunteerApplication = volunteerApplicationRepository.findVolunteerApplicationById(volunteerApplicationId);
+        if (volunteerApplication == null) {
+            throw new ApiException("Volunteer application not found");
+        }
+        volunteerApplication.setStatus("rejected");
+        volunteerApplicationRepository.save(volunteerApplication);
+    }
 
 
 }

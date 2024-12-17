@@ -2,6 +2,7 @@ package com.example.capstone3.Model;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -9,6 +10,7 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -47,13 +49,21 @@ public class Event {
     @NotNull(message = "Stadium cannot be null")
     private Stadium stadium;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
+    private Set<Volunteer> volunteers;
 
 
-    @Column(columnDefinition = "varchar(50) not null")
+
+    @Column(columnDefinition = "varchar(20) default Hold")
     @NotEmpty(message = "Status cannot be empty")
-    @Pattern(regexp = "Run|Ended", message = "Status must be either 'Run' or 'Ended'")
-    private String status;
+    @Pattern(regexp = "^(Run|Ended|Hold|Accept request)+$", message = "Status must be Run or Ended or Hold or Accept request")
+    private String status="Hold";
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
+    private Set<VolunteerApplication> volunteerApplications;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
+    private Set<VolunteerRating> volunteerRatings;
 
 }
 

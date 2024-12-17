@@ -12,6 +12,7 @@ import com.example.capstone3.Repository.VolunteerRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -80,4 +81,29 @@ public class VolunteerRatingService {
     }
 
 
-}
+
+    // method to get the average rating for a volunteer (Aishtiaq1)
+     public double volunteersByTheHighestAverageOfRatings(Integer volunteerId){
+      List<VolunteerRating> volunteerRating=volunteerRatingRepository.findVolunteerRatingByVolunteerId(volunteerId);
+       ArrayList<Integer>sumArrayList=new ArrayList<>();
+       if(volunteerRating==null){
+           throw new ApiException("no volunteer with this id was found");
+       }
+       int sum=0;
+       double average=0;
+       for (VolunteerRating v : volunteerRating){
+        sum+=v.getRating() ;
+           sumArrayList.add(sum);
+           average=sumArrayList.size();
+
+      }
+       return sum/average;
+
+
+       }
+
+
+    }
+
+
+

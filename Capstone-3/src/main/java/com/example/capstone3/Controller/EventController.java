@@ -1,5 +1,6 @@
 package com.example.capstone3.Controller;
 
+import com.example.capstone3.DTO.EventDTO;
 import com.example.capstone3.Model.Event;
 import com.example.capstone3.Service.EventService;
 import jakarta.validation.Valid;
@@ -15,29 +16,30 @@ public class EventController {
 
     @GetMapping("/get-all")
     public ResponseEntity getAll() {
-        return ResponseEntity.ok(eventService.getAllEventDTOs());
+        return ResponseEntity.status(200).body(eventService.getAllEventDTOs());
     }
 
     @PostMapping("/add")
-    public ResponseEntity addEvent(@RequestBody @Valid Event event) {
+    public ResponseEntity addEvent(@RequestBody @Valid EventDTO event) {
         eventService.addEvent(event);
-        return ResponseEntity.ok("Event added");
+        return ResponseEntity.status(200).body("Event added");
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity updateEvent(@PathVariable Integer id, @RequestBody @Valid Event event) {
+    public ResponseEntity updateEvent(@PathVariable Integer id, @RequestBody @Valid EventDTO event) {
         eventService.updateEvent(id, event);
-        return ResponseEntity.ok("Event updated");
+        return ResponseEntity.status(200).body("Event updated");
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity deleteEvent(@PathVariable Integer id) {
         eventService.deleteEvent(id);
-        return ResponseEntity.ok("Event deleted");
+        return ResponseEntity.status(200).body("Event deleted");
     }
 
     @GetMapping("/get-by-id/{id}")
     public ResponseEntity getById(@PathVariable Integer id) {
-        return ResponseEntity.ok(eventService.getEventById(id));
+
+        return ResponseEntity.status(200).body(eventService.getEventById(id));
     }
 }

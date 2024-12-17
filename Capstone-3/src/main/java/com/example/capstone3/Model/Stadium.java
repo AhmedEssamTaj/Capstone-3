@@ -1,8 +1,11 @@
 package com.example.capstone3.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+
+import java.util.Set;
 
 @Entity
 @Getter
@@ -44,9 +47,14 @@ public class Stadium {
     @Positive(message = "value must be a positive number")
     private Integer capacity;
 
-    @Column(columnDefinition = "varchar(50) not null")
+    @Column(columnDefinition = "varchar(50) not null default Available")
     @NotEmpty(message = "Status cannot be empty")
     @Pattern(regexp = "Available|Maintenance", message = "Status must be either 'Available' or 'Maintenance'")
-    private String status;
+    private String status = "Available";
+
+    @OneToMany(mappedBy = "stadium", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<Event> events;
+
 
 }

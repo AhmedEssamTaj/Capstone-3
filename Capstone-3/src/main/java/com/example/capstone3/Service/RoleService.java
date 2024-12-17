@@ -1,12 +1,9 @@
 package com.example.capstone3.Service;
 
 import com.example.capstone3.ApiResponse.ApiException;
-import com.example.capstone3.DTO.EventDTOout;
 import com.example.capstone3.DTO.RoleDTO;
 import com.example.capstone3.DTO.RoleDTOout;
-import com.example.capstone3.Model.Event;
 import com.example.capstone3.Model.Role;
-import com.example.capstone3.Model.Volunteer;
 import com.example.capstone3.Repository.EventRepository;
 import com.example.capstone3.Repository.RoleRepository;
 import com.example.capstone3.Repository.VolunteerRepository;
@@ -69,15 +66,11 @@ public class RoleService {
 
         role.setName(updatedRole.getName());
         role.setDescription(updatedRole.getDescription());
-        role.set(updatedRole.getDescription());
         role.setEvent(eventRepository.findEventById(updatedRole.getEvent_id()));
         role.setVolunteer(volunteerRepository.findVolunteerById(updatedRole.getVolunteer_id()));
         roleRepository.save(role);
     }
     private RoleDTOout convertToDTOout(Role role) {
         return new RoleDTOout(role.getName(),role.getVolunteer().getName(),role.getEvent().getName(),role.getDescription());
-    }
-    private RoleDTO convertToDTO(Role role) {
-        return new RoleDTO(role.getName(),role.getVolunteer().getId(),role.getEvent().getId(),role.getDescription());
     }
 }

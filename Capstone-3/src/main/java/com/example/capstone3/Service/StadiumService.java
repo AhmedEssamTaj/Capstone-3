@@ -1,7 +1,9 @@
 package com.example.capstone3.Service;
 
 import com.example.capstone3.ApiResponse.ApiException;
+
 import com.example.capstone3.DTO.StadiumDTO;
+import com.example.capstone3.DTO.StadiumDTOout;
 import com.example.capstone3.Model.Stadium;
 import com.example.capstone3.Repository.StadiumRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,44 +17,63 @@ import java.util.List;
 public class StadiumService {
     private final StadiumRepository stadiumRepository;
 
-    public Stadium getStadiumById(Integer id) {
+    public StadiumDTOout getStadiumById(Integer id) {
         Stadium stadium = stadiumRepository.findStadiumById(id);
         if (stadium == null) {
             throw new ApiException("Stadium not found");
         }
-        return stadium;
+        return convertToDTOout(stadium);
     }
 
-    public List<StadiumDTO> getAllStadiumDTOs() {
+    public List<StadiumDTOout> getAllStadiumDTOs() {
         List<Stadium> stadiums = stadiumRepository.findAll();
-        List<StadiumDTO> stadiumDTOs = new ArrayList<>();
+        List<StadiumDTOout> stadiumDTOs = new ArrayList<>();
         for (Stadium s : stadiums) {
-            stadiumDTOs.add(new StadiumDTO(s.getId(), s.getName(), s.getLocation(), s.getCapacity(), s.getStatus()));
+            stadiumDTOs.add(convertToDTOout(s));
         }
         return stadiumDTOs;
     }
 
-    public void addStadium(Stadium stadium) {
+    public void addStadium(StadiumDTO updatedStadium) {
+
+        Stadium stadium=new Stadium();
+        stadium.setName(updatedStadium.getName());
+        stadium.setCity(updatedStadium.getCity());
+        stadium.setLocation(updatedStadium.getLocation());
+        stadium.setNumberOfGates(updatedStadium.getNumberOfGates());
+        stadium.setParkingCapacity(updatedStadium.getParkingCapacity());
+        stadium.setEmergencyExits(updatedStadium.getEmergencyExits());
+        stadium.setCapacity(updatedStadium.getCapacity());
+        stadium.setStatus(updatedStadium.getStatus());
         stadiumRepository.save(stadium);
     }
 
     public void deleteStadium(Integer id) {
-        Stadium stadium = getStadiumById(id);
+        Stadium stadium = stadiumRepository.findStadiumById(id);
         if (stadium == null) {
             throw new ApiException("Stadium not found");
         }
         stadiumRepository.delete(stadium);
     }
 
-    public void updateStadium(Integer id, Stadium updatedStadium) {
-        Stadium stadium = getStadiumById(id);
+    public void updateStadium(Integer id, StadiumDTO updatedStadium) {
+        Stadium stadium =stadiumRepository.findStadiumById(id);
         if (stadium == null) {
             throw new ApiException("Stadium not found");
         }
         stadium.setName(updatedStadium.getName());
+        stadium.setCity(updatedStadium.getCity());
         stadium.setLocation(updatedStadium.getLocation());
+        stadium.setNumberOfGates(updatedStadium.getNumberOfGates());
+        stadium.setParkingCapacity(updatedStadium.getParkingCapacity());
+        stadium.setEmergencyExits(updatedStadium.getEmergencyExits());
         stadium.setCapacity(updatedStadium.getCapacity());
         stadium.setStatus(updatedStadium.getStatus());
         stadiumRepository.save(stadium);
     }
+
+    private StadiumDTOout convertToDTOout(Stadium stadium) {
+        return new StadiumDTOout(stadium.getName(),stadium.getLocation(),stadium.getCapacity(),stadium.getStatus());
+    }
+
 }

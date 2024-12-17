@@ -1,5 +1,6 @@
 package com.example.capstone3.Controller;
 
+import com.example.capstone3.DTO.StadiumDTO;
 import com.example.capstone3.Model.Stadium;
 import com.example.capstone3.Service.StadiumService;
 import jakarta.validation.Valid;
@@ -15,29 +16,29 @@ public class StadiumController {
 
     @GetMapping("/get-all")
     public ResponseEntity getAllStadiums() {
-        return ResponseEntity.ok(stadiumService.getAllStadiumDTOs());
+        return ResponseEntity.status(200).body(stadiumService.getAllStadiumDTOs());
     }
 
     @GetMapping("/get-by-id/{id}")
     public ResponseEntity getStadiumById(@PathVariable Integer id) {
-        return ResponseEntity.ok(stadiumService.getStadiumById(id));
+        return ResponseEntity.status(200).body(stadiumService.getStadiumById(id));
     }
 
     @PostMapping("/add")
-    public ResponseEntity addStadium(@RequestBody @Valid Stadium stadium) {
+    public ResponseEntity addStadium(@RequestBody @Valid StadiumDTO stadium) {
         stadiumService.addStadium(stadium);
-        return ResponseEntity.ok("Stadium added successfully");
+        return ResponseEntity.status(200).body("Stadium added successfully");
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity updateStadium(@PathVariable Integer id, @RequestBody @Valid Stadium stadium) {
+    public ResponseEntity updateStadium(@PathVariable Integer id, @RequestBody @Valid StadiumDTO stadium) {
         stadiumService.updateStadium(id, stadium);
-        return ResponseEntity.ok("Stadium updated successfully");
+        return ResponseEntity.status(200).body("Stadium updated successfully");
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity deleteStadium(@PathVariable Integer id) {
         stadiumService.deleteStadium(id);
-        return ResponseEntity.ok("Stadium deleted successfully");
+        return ResponseEntity.status(200).body("Stadium deleted successfully");
     }
 }

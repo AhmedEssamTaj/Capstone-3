@@ -20,20 +20,20 @@ public class Training {
     @Id
     private Integer id;
 
-    @NotEmpty
+    @NotEmpty(message = "title cannot be empty")
     @Size(min = 3, max = 100)
     @Column(columnDefinition = "varchar(100) not null")
     private String title;
 
-    @NotEmpty
+    @NotEmpty(message = "description cannot be empty")
     @Column(columnDefinition = "text not null")
     private String description;
 
-    @NotNull
+    @NotNull(message = "startDate cannot be empty")
     @Column(columnDefinition = "date not null")
     private LocalDate startDate;
 
-    @NotNull
+    @NotNull(message = "endDate cannot be empty")
     @Column(columnDefinition = "date not null")
     private LocalDate endDate;
 
@@ -46,6 +46,6 @@ public class Training {
 
     @OneToOne
     @JsonIgnore
-    @MapsId
+    @JoinColumn(name = "trainer_id", referencedColumnName = "id")
     private Trainer trainer;
 }

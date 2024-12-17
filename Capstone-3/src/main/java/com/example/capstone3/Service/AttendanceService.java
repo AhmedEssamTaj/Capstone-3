@@ -7,6 +7,7 @@ import com.example.capstone3.Model.Attendance;
 import com.example.capstone3.Model.Event;
 import com.example.capstone3.Repository.AttendanceRepository;
 import com.example.capstone3.Repository.EventRepository;
+import com.example.capstone3.Repository.VolunteerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalTime;
@@ -18,6 +19,8 @@ import java.util.List;
 public class AttendanceService {
     private final AttendanceRepository attendanceRepository;
     private final EventRepository eventRepository;
+    private final VolunteerRepository volunteerRepository;
+
 
     public AttendanceDTOout getAttendanceById(Integer id) {
         Attendance attendance = attendanceRepository.findAttendanceById(id);
@@ -36,16 +39,7 @@ public class AttendanceService {
         return dtos;
     }
 
-    public AttendanceDTO addAttendance(AttendanceDTO attendanceDTO) {
-        if (attendanceRepository.existsByEventIdAndVolunteerId(attendanceDTO.getEventId(), attendanceDTO.getVolunteerId())) {
-            throw new ApiException("Attendance already exists for this volunteer and event");
-        }
-        Attendance attendance = new Attendance(); // populate from DTO
-        attendanceRepository.save(attendance);
-        return convertToDTO(attendance);
-    }
-
-    public AttendanceDTO updateAttendanceStatus(Integer id, String status) {
+    public void updateAttendanceAbsent(Integer id) {
         Attendance attendance = attendanceRepository.findAttendanceById(id);
         if (attendance == null) {
             throw new ApiException("Attendance not found");
@@ -53,38 +47,45 @@ public class AttendanceService {
         if ("Checked-out".equals(attendance.getStatus())) {
             throw new ApiException("Cannot change status after checking out");
         }
-        attendance.setStatus(status);
+        attendance.setStatus("Absent");
         attendanceRepository.save(attendance);
-        return convertToDTO(attendance);
+
     }
 
-    public AttendanceDTO updateAttendanceCheckIn(Integer volunteer_id,Integer event_id, LocalTime checkIn) {
+    public void updateAttendanceCheckIn(Integer volunteer_id,Integer event_id, LocalTime checkIn) {
         Attendance attendance = attendanceRepository.findAttendanceById(volunteer_id);
         Event event=eventRepository.findEventById(event_id);
         if (attendance == null) {
             throw new ApiException("Attendance not found");
+        }
+        if (volunteerRepository.findVolunteerById(volunteer_id) == null) {
+            throw new ApiException("volunteer not found");
         }
         if (event.getStartTime().isBefore(checkIn)){
             throw new ApiException("Check-in time cannot be before event Start time");
         }
 
         attendance.setCheckIn(checkIn);
+        attendance.setStatus("checkIn");
         attendanceRepository.save(attendance);
-        return convertToDTO(attendance);
+
     }
 
-    public AttendanceDTO updateAttendanceCheckOut(Integer volunteer_id,Integer event_id, LocalTime checkOut) {
+    public void updateAttendanceCheckOut(Integer volunteer_id,Integer event_id, LocalTime checkOut) {
         Attendance attendance = attendanceRepository.findAttendanceById(volunteer_id);
         Event event=eventRepository.findEventById(event_id);
         if (attendance == null) {
             throw new ApiException("Attendance not found");
         }
+        if (volunteerRepository.findVolunteerById(volunteer_id) == null) {
+            throw new ApiException("volunteer not found");
+        }
         if (event.getEndTime().isBefore(checkOut)){
             throw new ApiException("Check-in time cannot be before event end time");
         }
         attendance.setCheckOut(checkOut);
+        attendance.setStatus("checkout");
         attendanceRepository.save(attendance);
-        return convertToDTO(attendance);
     }
 
     public void deleteAttendance(Integer id) {

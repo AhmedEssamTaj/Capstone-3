@@ -1,9 +1,8 @@
 package com.example.capstone3.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 @Entity
@@ -16,4 +15,12 @@ public class VolunteerSkills {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @NotEmpty(message = "description cannot be empty")
+    @Column(columnDefinition = "varchar(50) not null")
+    private String description;
+
+    @ManyToOne
+    @JsonIgnore
+    private Volunteer volunteer;
 }

@@ -23,24 +23,24 @@ public class Volunteer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotEmpty
+    @NotEmpty(message = "name cannot be empty")
     @Size(min = 3, max = 50)
     @Column(columnDefinition = "varchar(50) not null")
     private String name;
 
     @Email
-    @NotEmpty
+    @NotEmpty(message = "email cannot be empty")
     @Column(columnDefinition = "varchar(50) not null unique")
     private String email;
 
-    @NotEmpty
+    @NotEmpty(message = "phoneNumber cannot be empty")
     @Pattern(regexp = "\\d{10}", message = "Phone number must be 10 digits")
     @Column(columnDefinition = "varchar(10) not null unique")
     private String phoneNumber;
 
 
     @Column(columnDefinition = "boolean not null default false")
-    private boolean isTrained;
+    private boolean isTrained = false;
 
     @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
     private Set<Training> trainings;
@@ -55,12 +55,17 @@ public class Volunteer {
     @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
     private Set<VolunteerRating> volunteerRatings;
 
-    @ManyToOne
-    @JsonIgnore
+    @OneToOne(cascade =CascadeType.ALL)
+    @PrimaryKeyJoinColumn
     private Role role;
 
-    @OneToMany
+    @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
     private Set<VolunteerSkills> volunteerSkills;
+
+    @ManyToOne
+    @JoinColumn(name = "event_id", referencedColumnName = "id")
+    @JsonIgnore
+    private Event event;
 
 
 

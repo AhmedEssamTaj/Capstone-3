@@ -1,5 +1,6 @@
 package com.example.capstone3.Controller;
 
+import com.example.capstone3.ApiResponse.ApiResponse;
 import com.example.capstone3.DTO.AttendanceDTO;
 import com.example.capstone3.DTO.AttendanceDTOout;
 import com.example.capstone3.Service.AttendanceService;
@@ -7,8 +8,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @RestController
@@ -22,28 +21,22 @@ public class AttendanceController {
         return ResponseEntity.status(200).body(attendanceService.getAllAttendances());
     }
 
-    @PostMapping("/add")
-    public ResponseEntity addAttendance(@RequestBody @Valid AttendanceDTO attendanceDTO) {
-        AttendanceDTO addedAttendance = attendanceService.addAttendance(attendanceDTO);
-        return ResponseEntity.status(200).body(addedAttendance);
-    }
-
-    @PutMapping("/update-status/{id}")
-    public ResponseEntity updateAttendanceStatus(@PathVariable Integer id, @RequestBody @Valid String status) {
-        AttendanceDTO updatedAttendance = attendanceService.updateAttendanceStatus(id, status);
-        return ResponseEntity.status(200).body(updatedAttendance);
+    @PutMapping("/Absent/{id}")
+    public ResponseEntity updateAttendanceAbsent(@PathVariable Integer id) {
+        attendanceService.updateAttendanceAbsent(id);
+        return ResponseEntity.status(200).body(new ApiResponse("attendance updated successfully"));
     }
 
     @PutMapping("/update-check-in/{volunteer_id}/{event_id}")
     public ResponseEntity updateCheckIn(@PathVariable Integer volunteer_id,@PathVariable Integer event_id, @RequestBody @Valid LocalTime checkIn) {
-        AttendanceDTO updatedAttendance = attendanceService.updateAttendanceCheckIn(volunteer_id,event_id, checkIn);
-        return ResponseEntity.status(200).body(updatedAttendance);
+        attendanceService.updateAttendanceCheckIn(volunteer_id,event_id, checkIn);
+        return ResponseEntity.status(200).body(new ApiResponse("record updated"));
     }
 
     @PutMapping("/update-check-out/{volunteer_id}/{event_id}")
     public ResponseEntity updateCheckOut(@PathVariable Integer volunteer_id,@PathVariable Integer event_id, @RequestBody @Valid LocalTime checkOut) {
-        AttendanceDTO updatedAttendance = attendanceService.updateAttendanceCheckOut(volunteer_id,event_id, checkOut);
-        return ResponseEntity.status(200).body(updatedAttendance);
+        attendanceService.updateAttendanceCheckOut(volunteer_id,event_id, checkOut);
+        return ResponseEntity.status(200).body(new ApiResponse("record updated"));
     }
 
     @DeleteMapping("/delete/{id}")

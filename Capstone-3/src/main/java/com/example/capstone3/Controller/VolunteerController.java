@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/Volunteer")
+@RequestMapping("/api/v1/volunteer")
 @RequiredArgsConstructor
 public class VolunteerController {
 
@@ -20,7 +20,7 @@ public class VolunteerController {
         return ResponseEntity.status(200).body(volunteerService.getAllVolunteer());
     }
 
-    @GetMapping("/get-Volunteer-DTO")
+    @GetMapping("/get-volunteer-DTO")
     public ResponseEntity getVolunteerDTO(){
        return  ResponseEntity.status(200) .body(volunteerService.getVolunteerDTO());
     }

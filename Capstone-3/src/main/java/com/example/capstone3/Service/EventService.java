@@ -1,14 +1,13 @@
 package com.example.capstone3.Service;
 
 import com.example.capstone3.ApiResponse.ApiException;
-import com.example.capstone3.DTO.AttendanceDTO;
-import com.example.capstone3.DTO.AttendanceDTOout;
 import com.example.capstone3.DTO.EventDTO;
 import com.example.capstone3.DTO.EventDTOout;
-import com.example.capstone3.Model.Attendance;
+import com.example.capstone3.DTO.VolunteerDTO;
 import com.example.capstone3.Model.Event;
 import com.example.capstone3.Repository.EventRepository;
 import com.example.capstone3.Repository.StadiumRepository;
+import com.example.capstone3.Repository.VolunteerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +19,8 @@ import java.util.List;
 public class EventService {
     private final EventRepository eventRepository;
     private final StadiumRepository stadiumRepository;
+    private final VolunteerRepository volunteerRepository;
+    private final VolunteerService volunteerService;
 
     public Event getEventById(Integer id) {
         Event event = eventRepository.findEventById(id);
@@ -38,15 +39,19 @@ public class EventService {
         return eventDTOs;
     }
 
+
     public void addEvent(EventDTO event_in) {
         Event event=new Event();
+        if(stadiumRepository.findStadiumById(event_in.getStadium_id()).getStatus()!="Maintenance"){
         event.setName(event_in.getName());
         event.setDate(event_in.getDate());
         event.setStartTime(event_in.getStartTime());
         event.setEndTime(event_in.getEndTime());
+        event.setMaxCapacity(event_in.getMaxCapacity());
         event.setStatus(event_in.getStatus());
-        event.setStadium(stadiumRepository.findStadiumById(event_in.getStadiumId()));
-        eventRepository.save(event);
+        event.setStadium(stadiumRepository.findStadiumById(event_in.getStadium_id()));
+        eventRepository.save(event);}
+        throw new ApiException("Event cant be added the stadium in Maintenance");
     }
 
     public void deleteEvent(Integer id) {
@@ -67,16 +72,13 @@ public class EventService {
         event.setStartTime(updatedEvent.getStartTime());
         event.setEndTime(updatedEvent.getEndTime());
         event.setStatus(updatedEvent.getStatus());
-        event.setStadium(stadiumRepository.findStadiumById(updatedEvent.getStadiumId()));
+        event.setStadium(stadiumRepository.findStadiumById(updatedEvent.getStadium_id()));
         eventRepository.save(event);
     }
 
     private EventDTOout convertToDTOout(Event event) {
         return new EventDTOout(event.getName(),event.getDate(),event.getStartTime(),event.getEndTime(),event.getStatus(),event.getStadium().getName());
     }
-    private EventDTO convertToDTO(Event event) {
-        return new EventDTO(event.getId(),event.getName(),event.getDate(),event.getStartTime(),event.getEndTime(),event.getStatus(),
-                event.getStadium().getId());
-    }
+
 
 }
