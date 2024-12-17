@@ -46,21 +46,21 @@ public class Volunteer {
     private Set<Training> trainings;
 
 
-//    @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
-//    private  Set<Attendance>attendances;
-//
-//    @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
-//    private Set<VolunteerApplication>volunteerApplications;
-//
-//    @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
-//    private Set<VolunteerRating> volunteerRatings;
-//
-//    @ManyToOne
-//    @JsonIgnore
-//    private Role role;
-//
-//    @OneToMany
-//    private Set<VolunteerSkills> volunteerSkills;
+    @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
+    private  Set<Attendance>attendances;
+
+    @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
+    private Set<VolunteerApplication>volunteerApplications;
+
+    @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
+    private Set<VolunteerRating> volunteerRatings;
+
+    @ManyToOne
+    @JsonIgnore
+    private Role role;
+
+    @OneToMany
+    private Set<VolunteerSkills> volunteerSkills;
 
 
 
