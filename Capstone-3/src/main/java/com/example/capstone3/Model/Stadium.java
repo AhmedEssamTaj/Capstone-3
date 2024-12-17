@@ -1,22 +1,52 @@
 package com.example.capstone3.Model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
-import java.util.Set;
-
 @Entity
-@Data
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class Stadium {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "stadium")
-    private Set<VolunteerRating>volunteerRatings;
+    @Column(columnDefinition = "varchar(50) not null")
+    @NotEmpty(message = "Name cannot be empty")
+    private String name;
+
+    @Column(columnDefinition = "varchar(100) not null")
+    @NotEmpty(message = "City cannot be empty")
+    private String city;
+
+    @Column(columnDefinition = "varchar(100) not null")
+    @NotEmpty(message = "Location cannot be empty")
+    private String location;
+
+    @PositiveOrZero(message = "the value must be ether positive or zero")
+    @Column(columnDefinition = "int not null  default 1")
+    private Integer numberOfGates=1;
+
+    @PositiveOrZero(message = "the value must be ether positive or zero")
+    @Column(columnDefinition = "int not null  default 1")
+    private Integer parkingCapacity=1;
+
+    @PositiveOrZero(message = "the value must be ether positive or zero")
+    @Column(columnDefinition = "int not null  default 1")
+    private Integer emergencyExits=1;
+
+    @Column(columnDefinition = "int default 1 not null")
+    @NotNull(message = "Capacity cannot be null")
+    @Min(value = 1, message = "Capacity must be at least 1")
+    @Positive(message = "value must be a positive number")
+    private Integer capacity;
+
+    @Column(columnDefinition = "varchar(50) not null")
+    @NotEmpty(message = "Status cannot be empty")
+    @Pattern(regexp = "Available|Maintenance", message = "Status must be either 'Available' or 'Maintenance'")
+    private String status;
+
 }
