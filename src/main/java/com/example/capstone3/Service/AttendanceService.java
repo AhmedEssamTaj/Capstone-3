@@ -61,24 +61,6 @@ public class AttendanceService {
         return convertListToDTOout(attendances);
     }
 
-    public AttendanceDTOout getAttendanceByEventAndVolunteer(Integer eventId, Integer volunteerId) {
-        Attendance attendance = validateAttendanceByEventAndVolunteer(eventId, volunteerId);
-        return convertToDTOout(attendance);
-    }
-
-    public List<AttendanceDTOout> getAttendancesCheckedInBefore(LocalTime time) {
-        validateTime(time);
-        List<Attendance> attendances = attendanceRepository.findByCheckInBefore(time);
-        if (attendances.isEmpty()) throw new ApiException("No attendances checked in before " + time);
-        return convertListToDTOout(attendances);
-    }
-
-    public long getAttendanceCount() {
-        long count = attendanceRepository.count();
-        if (count == 0) throw new ApiException("No attendance records found");
-        return count;
-    }
-
     public boolean doesAttendanceExist(Integer id) {
         return attendanceRepository.existsById(id);
     }
@@ -96,24 +78,29 @@ public class AttendanceService {
         attendanceRepository.save(attendance);
     }
 
-    public void markAttendanceCheckedIn(Integer id, LocalTime checkIn) {
+    public void markAttendanceCheckedIn(Integer id) {
         Attendance attendance = validateAttendance(id);
         if ("Checked-in".equals(attendance.getStatus()))
             throw new ApiException("Attendance already checked in");
-        validateTimeAvailability(attendance.getVolunteer().getId(), checkIn);
-        attendance.setCheckIn(validateTime(checkIn));
-        attendance.setStatus("Checked-in");
+
+        LocalTime currentTime = LocalTime.now();
+        validateTimeAvailability(attendance.getVolunteer().getId(), currentTime);
+        attendance.setCheckIn(currentTime);
+        attendance.setStatus("Checked in");
         attendanceRepository.save(attendance);
     }
 
-    public void markAttendanceCheckedOut(Integer id, LocalTime checkOut) {
+    public void markAttendanceCheckedOut(Integer id) {
         Attendance attendance = validateAttendance(id);
         if (!"Checked-in".equals(attendance.getStatus()))
             throw new ApiException("Cannot check out without checking in first");
-        if (checkOut.isBefore(attendance.getCheckIn()))
+
+        LocalTime currentTime = LocalTime.now();
+        if (currentTime.isBefore(attendance.getCheckIn()))
             throw new ApiException("Check-out time cannot be earlier than check-in time");
-        attendance.setCheckOut(validateTime(checkOut));
-        attendance.setStatus("Checked-out");
+
+        attendance.setCheckOut(currentTime);
+        attendance.setStatus("Checked out");
         attendanceRepository.save(attendance);
     }
 
@@ -189,11 +176,6 @@ public class AttendanceService {
         return time;
     }
 
-    private Attendance validateAttendanceByEventAndVolunteer(Integer eventId, Integer volunteerId) {
-        Attendance attendance = attendanceRepository.findByEventAndVolunteer(eventId, volunteerId);
-        if (attendance == null) throw new ApiException("Attendance not found for event and volunteer");
-        return attendance;
-    }
 
     private void validateEventAvailability(Integer eventId) {
         Event event = validateEvent(eventId);

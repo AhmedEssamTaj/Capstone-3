@@ -56,23 +56,6 @@ public class EventService {
         return convertToDTOList(events);
     }
 
-    public Event getLatestEvent() {
-        Event event = eventRepository.findTopByOrderByDateDesc();
-        if (event == null) throw new ApiException("No events available");
-        return event;
-    }
-
-    public List<EventDTOout> getEventsByCapacity(Integer capacity) {
-        validateCapacity(capacity);
-        List<Event> events = eventRepository.findByMaxCapacityGreaterThanEqual(capacity);
-        if (events.isEmpty()) throw new ApiException("No events found with capacity greater than or equal to " + capacity);
-        return convertToDTOList(events);
-    }
-
-    public long countEvents() {
-        return eventRepository.count();
-    }
-
     public List<EventDTOout> getEventsByStartTime(LocalTime time) {
         validateTime(time);
         List<Event> events = eventRepository.findByStartTime(time);
@@ -80,12 +63,6 @@ public class EventService {
         return convertToDTOList(events);
     }
 
-    public List<EventDTOout> getEventsByEndTime(LocalTime time) {
-        validateTime(time);
-        List<Event> events = eventRepository.findByEndTime(time);
-        if (events.isEmpty()) throw new ApiException("No events found with the specified end time");
-        return convertToDTOList(events);
-    }
 
     public List<EventDTOout> getUpcomingEvents(LocalDate today) {
         List<Event> events = eventRepository.findByDateAfter(today);
@@ -99,23 +76,12 @@ public class EventService {
         return convertToDTOList(events);
     }
 
-    public List<EventDTOout> getEventsByMultipleStatuses(List<String> statuses) {
-        List<Event> events = eventRepository.findByStatusIn(statuses);
-        if (events.isEmpty()) throw new ApiException("No events found for the specified statuses");
-        return convertToDTOList(events);
-    }
 
     public void addEvent(EventDTO dto) {
         validateEventConflict(dto);
         validateStadiumAvailability(dto.getStadium_id());
         Event event = createEventFromDTO(dto);
         eventRepository.save(event);
-    }
-
-    public void addEventsInBulk(List<EventDTO> dtos) {
-        for (EventDTO dto : dtos) {
-            addEvent(dto);
-        }
     }
 
     public void updateEventStatus(Integer id, String status) {
@@ -132,12 +98,7 @@ public class EventService {
         eventRepository.save(event);
     }
 
-    public void updateEventCapacity(Integer id, Integer capacity) {
-        validateCapacity(capacity);
-        Event event = findEvent(id);
-        event.setMaxCapacity(capacity);
-        eventRepository.save(event);
-    }
+
 
     public void updateEventTime(Integer id, LocalTime startTime, LocalTime endTime) {
         validateTimeRange(startTime, endTime);
@@ -185,11 +146,6 @@ public class EventService {
         }
     }
 
-    private void validateCapacity(Integer capacity) {
-        if (capacity == null || capacity < 1) {
-            throw new ApiException("Invalid capacity: " + capacity);
-        }
-    }
 
     private void validateTime(LocalTime time) {
         if (time == null) {

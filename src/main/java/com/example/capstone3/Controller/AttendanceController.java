@@ -77,16 +77,15 @@ public class AttendanceController {
 
     @PostMapping("/mark-check-in/{id}")
     public ResponseEntity markAttendanceCheckIn(@PathVariable Integer id, @RequestBody @Valid LocalTime checkIn) {
-        attendanceService.markAttendanceCheckedIn(id, checkIn);
+        attendanceService.markAttendanceCheckedIn(id);
         return ResponseEntity.status(200).body(new ApiResponse("Attendance marked as checked-in"));
     }
 
     @PostMapping("/mark-check-out/{id}")
     public ResponseEntity markAttendanceCheckOut(@PathVariable Integer id, @RequestBody @Valid LocalTime checkOut) {
-        attendanceService.markAttendanceCheckedOut(id, checkOut);
+        attendanceService.markAttendanceCheckedOut(id);
         return ResponseEntity.status(200).body(new ApiResponse("Attendance marked as checked-out"));
     }
-
 
     @PutMapping("/update-status/{id}")
     public ResponseEntity updateAttendanceStatus(@PathVariable Integer id, @RequestBody @Valid String status) {

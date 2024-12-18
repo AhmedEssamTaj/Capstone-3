@@ -36,6 +36,6 @@ public class Attendance {
     private LocalTime checkOut;
 
     @Column(columnDefinition = "varchar(50)")
-    @Pattern(regexp = "Checked-in|Checked-out|Absent", message = "Status must be either 'Checked-in', 'Checked-out', or 'Absent'")
+    @Pattern(regexp = "Checked in|Checked out|Absent", message = "Status must be either 'Checked in', 'Checked out', or 'Absent'")
     private String status;
 }

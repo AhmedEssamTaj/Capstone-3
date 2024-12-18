@@ -47,10 +47,6 @@ public class StadiumService {
         return count;
     }
 
-    public boolean existsStadiumById(Integer id) {
-        if (id == null) throw new ApiException("Stadium ID cannot be null");
-        return stadiumRepository.existsById(id);
-    }
 
     public List<StadiumDTOout> getStadiumsByStatus(String status) {
         validateStatus(status);
@@ -59,18 +55,6 @@ public class StadiumService {
         return convertToDTOList(stadiums);
     }
 
-    public List<StadiumDTOout> getStadiumsWithParkingCapacityGreaterThan(Integer parkingCapacity) {
-        validateCapacity(parkingCapacity);
-        List<Stadium> stadiums = stadiumRepository.findByParkingCapacityGreaterThanEqual(parkingCapacity);
-        if (stadiums.isEmpty()) throw new ApiException("No stadiums found with parking capacity >= " + parkingCapacity);
-        return convertToDTOList(stadiums);
-    }
-
-    public StadiumDTOout getFirstStadium() {
-        Stadium stadium = stadiumRepository.findTopByOrderByIdAsc();
-        if (stadium == null) throw new ApiException("No stadiums found");
-        return convertToDTOout(stadium);
-    }
 
     public Stadium getLargestStadium() {
         Stadium stadium = stadiumRepository.findTopByOrderByCapacityDesc();
@@ -78,27 +62,6 @@ public class StadiumService {
         return stadium;
     }
 
-    public List<StadiumDTOout> getStadiumsWithEmergencyExitsGreaterThan(Integer exits) {
-        validateCapacity(exits);
-        List<Stadium> stadiums = stadiumRepository.findByEmergencyExitsGreaterThanEqual(exits);
-        if (stadiums.isEmpty()) throw new ApiException("No stadiums found with emergency exits >= " + exits);
-        return convertToDTOList(stadiums);
-    }
-
-    public List<StadiumDTOout> getStadiumsByCityAndStatus(String city, String status) {
-        validateCity(city);
-        validateStatus(status);
-        List<Stadium> stadiums = stadiumRepository.findByCityAndStatus(city, status);
-        if (stadiums.isEmpty()) throw new ApiException("No stadiums found in city: " + city + " with status: " + status);
-        return convertToDTOList(stadiums);
-    }
-
-    public List<StadiumDTOout> getStadiumsByMultipleCities(List<String> cities) {
-        if (cities == null || cities.isEmpty()) throw new ApiException("City list cannot be null or empty");
-        List<Stadium> stadiums = stadiumRepository.findByCityIn(cities);
-        if (stadiums.isEmpty()) throw new ApiException("No stadiums found in the specified cities");
-        return convertToDTOList(stadiums);
-    }
 
     public void addStadium(StadiumDTO dto) {
         validateStadiumDTO(dto);
@@ -106,34 +69,6 @@ public class StadiumService {
         stadiumRepository.save(stadium);
     }
 
-    public void addStadiumsInBulk(List<StadiumDTO> dtos) {
-        if (dtos == null || dtos.isEmpty()) throw new ApiException("Stadium list cannot be null or empty");
-        for (StadiumDTO dto : dtos) {
-            addStadium(dto);
-        }
-    }
-
-    public void duplicateStadium(Integer id) {
-        Stadium existing = findStadium(id);
-        Stadium duplicate = new Stadium();
-        duplicate.setName(existing.getName() + "_copy");
-        duplicate.setCity(existing.getCity());
-        duplicate.setLocation(existing.getLocation());
-        duplicate.setCapacity(existing.getCapacity());
-        duplicate.setParkingCapacity(existing.getParkingCapacity());
-        duplicate.setEmergencyExits(existing.getEmergencyExits());
-        duplicate.setStatus(existing.getStatus());
-        stadiumRepository.save(duplicate);
-    }
-
-    public void addStadiumWithDefaultCapacity(StadiumDTO dto, Integer defaultCapacity) {
-        validateStadiumDTO(dto);
-        if (defaultCapacity == null || defaultCapacity <= 0)
-            throw new ApiException("Default capacity must be greater than 0");
-        Stadium stadium = createStadiumFromDTO(dto);
-        stadium.setCapacity(defaultCapacity);
-        stadiumRepository.save(stadium);
-    }
 
     public void updateStadiumName(Integer id, String name) {
         Stadium stadium = findStadium(id);
@@ -163,12 +98,6 @@ public class StadiumService {
         stadiumRepository.save(stadium);
     }
 
-    public void updateStadiumParkingCapacity(Integer id, Integer parkingCapacity) {
-        Stadium stadium = findStadium(id);
-        validateCapacity(parkingCapacity);
-        stadium.setParkingCapacity(parkingCapacity);
-        stadiumRepository.save(stadium);
-    }
 
     public void updateStadiumStatus(Integer id, String status) {
         Stadium stadium = findStadium(id);
@@ -196,12 +125,6 @@ public class StadiumService {
         stadiumRepository.deleteAll(stadiums);
     }
 
-    public void deleteStadiumsWithCapacityLessThan(Integer capacity) {
-        validateCapacity(capacity);
-        List<Stadium> stadiums = stadiumRepository.findByCapacityLessThan(capacity);
-        if (stadiums.isEmpty()) throw new ApiException("No stadiums found with capacity less than: " + capacity);
-        stadiumRepository.deleteAll(stadiums);
-    }
 
     public void deleteAllStadiums() {
         stadiumRepository.deleteAll();
@@ -227,11 +150,13 @@ public class StadiumService {
     }
 
     private void validateCity(String city) {
-        if (city == null || city.trim().isEmpty()) throw new ApiException("City cannot be null or empty");
+        if (city == null || city.trim().isEmpty())
+            throw new ApiException("City cannot be null or empty");
     }
 
     private void validateCapacity(Integer capacity) {
-        if (capacity == null || capacity <= 0) throw new ApiException("Capacity must be greater than 0");
+        if (capacity == null || capacity <= 0)
+            throw new ApiException("Capacity must be greater than 0");
     }
 
     private void validateStatus(String status) {

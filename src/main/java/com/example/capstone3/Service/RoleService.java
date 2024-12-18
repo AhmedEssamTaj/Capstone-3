@@ -47,39 +47,12 @@ public class RoleService {
         return convertToDTOList(roles);
     }
 
-    public List<RoleDTOout> getRolesByName(String name) {
-        if (name == null || name.trim().isEmpty()) throw new ApiException("Role name cannot be null or empty");
-        List<Role> roles = roleRepository.findByName(name);
-        if (roles.isEmpty()) throw new ApiException("No roles found with name: " + name);
-        return convertToDTOList(roles);
-    }
-
     public long countRoles() {
         long count = roleRepository.count();
         if (count == 0) throw new ApiException("No roles found in the system");
         return count;
     }
 
-    public boolean roleExistsById(Integer id) {
-        if (id == null) throw new ApiException("Role ID cannot be null");
-        return roleRepository.existsById(id);
-    }
-
-    public List<RoleDTOout> getRolesByDescription(String description) {
-        if (description == null || description.trim().isEmpty())
-            throw new ApiException("Description cannot be null or empty");
-        List<Role> roles = roleRepository.findByDescriptionContaining(description);
-        if (roles.isEmpty()) throw new ApiException("No roles found with the specified description");
-        return convertToDTOList(roles);
-    }
-
-    public List<RoleDTOout> getRolesByEventName(String eventName) {
-        if (eventName == null || eventName.trim().isEmpty())
-            throw new ApiException("Event name cannot be null or empty");
-        List<Role> roles = roleRepository.findByEvent_Name(eventName);
-        if (roles.isEmpty()) throw new ApiException("No roles found for event name: " + eventName);
-        return convertToDTOList(roles);
-    }
 
     public void addRole(RoleDTO dto) {
         validateRoleDTO(dto);
@@ -94,13 +67,6 @@ public class RoleService {
         }
     }
 
-    public void addRoleToEvent(Integer eventId, RoleDTO dto) {
-        Event event = findEvent(eventId);
-        validateRoleDTO(dto);
-        Role role = createRoleFromDTO(dto);
-        role.setEvent(event);
-        roleRepository.save(role);
-    }
 
     public void updateRoleName(Integer id, String name) {
         Role role = findRole(id);
@@ -114,20 +80,6 @@ public class RoleService {
         if (description == null || description.trim().isEmpty())
             throw new ApiException("Description cannot be null or empty");
         role.setDescription(description);
-        roleRepository.save(role);
-    }
-
-    public void updateRoleVolunteer(Integer roleId, Integer volunteerId) {
-        Role role = findRole(roleId);
-        Volunteer volunteer = findVolunteer(volunteerId);
-        role.setVolunteer(volunteer);
-        roleRepository.save(role);
-    }
-
-    public void updateRoleEvent(Integer roleId, Integer eventId) {
-        Role role = findRole(roleId);
-        Event event = findEvent(eventId);
-        role.setEvent(event);
         roleRepository.save(role);
     }
 
@@ -160,12 +112,6 @@ public class RoleService {
         roleRepository.deleteAll(roles);
     }
 
-    public void deleteRolesByName(String name) {
-        if (name == null || name.trim().isEmpty()) throw new ApiException("Role name cannot be null or empty");
-        List<Role> roles = roleRepository.findByName(name);
-        if (roles.isEmpty()) throw new ApiException("No roles found with name: " + name);
-        roleRepository.deleteAll(roles);
-    }
 
     private Role findRole(Integer id) {
         if (id == null) throw new ApiException("Role ID cannot be null");
