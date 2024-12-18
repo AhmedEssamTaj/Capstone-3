@@ -83,7 +83,7 @@ public class VolunteerRatingService {
 
 
     // method to get the average rating for a volunteer (Aishtiaq-1)
-     public double volunteersByTheHighestAverageOfRatings(Integer volunteerId){
+     public double getTheAverageRatingForAVolunteer(Integer volunteerId){
       List<VolunteerRating> volunteerRating=volunteerRatingRepository.findVolunteerRatingByVolunteerId(volunteerId);
        ArrayList<Integer>sumArrayList=new ArrayList<>();
        if(volunteerRating==null){

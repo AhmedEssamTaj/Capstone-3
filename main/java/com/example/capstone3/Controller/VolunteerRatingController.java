@@ -1,10 +1,8 @@
 package com.example.capstone3.Controller;
 
 import com.example.capstone3.ApiResponse.ApiResponse;
-import com.example.capstone3.Model.VolunteerApplication;
 import com.example.capstone3.Model.VolunteerRating;
 import com.example.capstone3.Service.VolunteerRatingService;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -46,8 +44,8 @@ public class VolunteerRatingController {
 
     //(Aishtiaq-1)
     @GetMapping("/get-Average-Ratings/{volunteerId}")
-    public ResponseEntity volunteersByTheHighestAverageOfRatings(@PathVariable Integer volunteerId){
-        volunteerRatingService.volunteersByTheHighestAverageOfRatings(volunteerId);
+    public ResponseEntity getTheAverageRatingForAVoluntee(@PathVariable Integer volunteerId){
+        volunteerRatingService.getTheAverageRatingForAVolunteer(volunteerId);
         return  ResponseEntity.status(200).body(new ApiResponse("Volunteer's average ratings fetched successfully"));
     }
 }
