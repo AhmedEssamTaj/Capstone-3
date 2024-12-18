@@ -22,7 +22,7 @@ public interface EventRepository extends CrudRepository<Event, Integer> {
 
     Event findEventById(Integer id);
     Event findEventByStadium_IdAndDate(Integer id,LocalDate date);
-
+    Event findEventByDateAndStartTimeAndEndTime(LocalDate date, LocalTime startTime, LocalTime endTime);
     List<Event> findByDateBefore(LocalDate date);
 
     List<Event> findByDateAfter(LocalDate date);

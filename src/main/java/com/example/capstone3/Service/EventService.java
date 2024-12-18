@@ -86,6 +86,10 @@ public class EventService {
         return convertToDTOList(events);
     }
     public void addEvent(EventDTO dto) {
+        if (eventRepository.findEventByDateAndStartTimeAndEndTime(dto.getDate(),dto.getStartTime(),dto.getEndTime()) != null)
+            throw new ApiException("conflict with other event");
+        if (stadiumRepository.findStadiumById(dto.getStadium_id()).getStatus()!="Available")
+            throw new ApiException("stadium are not available");
         Event event = createEventFromDTO(dto);
         eventRepository.save(event);
     }
