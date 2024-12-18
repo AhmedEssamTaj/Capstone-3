@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+//bushra
 @RestController
 @RequestMapping("/api/v1/stadium")
 @RequiredArgsConstructor
@@ -48,15 +48,6 @@ public class StadiumController {
         return ResponseEntity.status(200).body(stadiumService.countStadiums());
     }
 
-    @GetMapping("/exists/{id}")
-    public ResponseEntity existsById(@PathVariable Integer id) {
-        return ResponseEntity.status(200).body(stadiumService.existsStadiumById(id));
-    }
-
-    @GetMapping("/get-first")
-    public ResponseEntity  getFirstStadium() {
-        return ResponseEntity.status(200).body(stadiumService.getFirstStadium());
-    }
 
     @GetMapping("/get-largest")
     public ResponseEntity getLargestStadium() {
@@ -68,12 +59,6 @@ public class StadiumController {
     public ResponseEntity  addStadium(@RequestBody @Valid StadiumDTO stadiumDTO) {
         stadiumService.addStadium(stadiumDTO);
         return ResponseEntity.status(201).body(new ApiResponse("Stadium added successfully"));
-    }
-
-    @PostMapping("/add-bulk")
-    public ResponseEntity  addStadiumsInBulk(@RequestBody @Valid List<StadiumDTO> stadiumDTOs) {
-        stadiumService.addStadiumsInBulk(stadiumDTOs);
-        return ResponseEntity.status(201).body(new ApiResponse("Stadiums added successfully"));
     }
 
     @PutMapping("/update-name/{id}")
@@ -106,7 +91,6 @@ public class StadiumController {
         return ResponseEntity.status(200).body(new ApiResponse("Stadium status updated successfully"));
     }
 
-    // DELETE Endpoints
     @DeleteMapping("/delete/{id}")
     public ResponseEntity  deleteStadiumById(@PathVariable Integer id) {
         stadiumService.deleteStadiumById(id);

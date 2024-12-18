@@ -51,6 +51,8 @@ public class Event {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
     private Set<Volunteer> volunteers;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
+    private Set<Role> roles;
 
 
 

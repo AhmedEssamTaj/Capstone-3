@@ -16,7 +16,6 @@ import java.util.List;
 public class StadiumService {
     private final StadiumRepository stadiumRepository;
 
-    // GET Methods
     public StadiumDTOout getStadiumById(Integer id) {
         Stadium stadium = findStadium(id);
         return convertToDTOout(stadium);
@@ -24,172 +23,144 @@ public class StadiumService {
 
     public List<StadiumDTOout> getAllStadiums() {
         List<Stadium> stadiums = stadiumRepository.findAll();
+        if (stadiums.isEmpty()) throw new ApiException("No stadiums found");
         return convertToDTOList(stadiums);
     }
 
     public List<StadiumDTOout> getStadiumsByCity(String city) {
+        validateCity(city);
         List<Stadium> stadiums = stadiumRepository.findByCity(city);
+        if (stadiums.isEmpty()) throw new ApiException("No stadiums found in city: " + city);
         return convertToDTOList(stadiums);
     }
 
     public List<StadiumDTOout> getStadiumsByCapacity(Integer capacity) {
+        validateCapacity(capacity);
         List<Stadium> stadiums = stadiumRepository.findByCapacityGreaterThanEqual(capacity);
+        if (stadiums.isEmpty()) throw new ApiException("No stadiums found with capacity >= " + capacity);
         return convertToDTOList(stadiums);
     }
 
     public long countStadiums() {
-        return stadiumRepository.count();
+        long count = stadiumRepository.count();
+        if (count == 0) throw new ApiException("No stadiums found in the system");
+        return count;
     }
 
-    public boolean existsStadiumById(Integer id) {
-        return stadiumRepository.existsById(id);
-    }
 
     public List<StadiumDTOout> getStadiumsByStatus(String status) {
+        validateStatus(status);
         List<Stadium> stadiums = stadiumRepository.findByStatus(status);
+        if (stadiums.isEmpty()) throw new ApiException("No stadiums found with status: " + status);
         return convertToDTOList(stadiums);
     }
 
-    public List<StadiumDTOout> getStadiumsWithParkingCapacityGreaterThan(Integer parkingCapacity) {
-        List<Stadium> stadiums = stadiumRepository.findByParkingCapacityGreaterThanEqual(parkingCapacity);
-        return convertToDTOList(stadiums);
-    }
-
-    public StadiumDTOout getFirstStadium() {
-        Stadium stadium = stadiumRepository.findTopByOrderByIdAsc();
-        return convertToDTOout(stadium);
-    }
 
     public Stadium getLargestStadium() {
-        return stadiumRepository.findTopByOrderByCapacityDesc();
-    }
-
-    public List<StadiumDTOout> getStadiumsWithEmergencyExitsGreaterThan(Integer exits) {
-        List<Stadium> stadiums = stadiumRepository.findByEmergencyExitsGreaterThanEqual(exits);
-        return convertToDTOList(stadiums);
-    }
-
-    public List<StadiumDTOout> getStadiumsByCityAndStatus(String city, String status) {
-        List<Stadium> stadiums = stadiumRepository.findByCityAndStatus(city, status);
-        return convertToDTOList(stadiums);
-    }
-
-    public List<StadiumDTOout> getStadiumsByMultipleCities(List<String> cities) {
-        List<Stadium> stadiums = stadiumRepository.findByCityIn(cities);
-        return convertToDTOList(stadiums);
+        Stadium stadium = stadiumRepository.findTopByOrderByCapacityDesc();
+        if (stadium == null) throw new ApiException("No stadiums found");
+        return stadium;
     }
 
 
-
-    // POST Methods
     public void addStadium(StadiumDTO dto) {
+        validateStadiumDTO(dto);
         Stadium stadium = createStadiumFromDTO(dto);
         stadiumRepository.save(stadium);
     }
 
-    public void addStadiumsInBulk(List<StadiumDTO> dtos) {
-        for (StadiumDTO dto : dtos) {
-            addStadium(dto);
-        }
-    }
 
-    public void duplicateStadium(Integer id) {
-        Stadium existing = findStadium(id);
-        Stadium duplicate = new Stadium();
-        duplicate.setName(existing.getName() + "_copy");
-        duplicate.setCity(existing.getCity());
-        duplicate.setLocation(existing.getLocation());
-        duplicate.setCapacity(existing.getCapacity());
-        duplicate.setParkingCapacity(existing.getParkingCapacity());
-        duplicate.setEmergencyExits(existing.getEmergencyExits());
-        duplicate.setStatus(existing.getStatus());
-        stadiumRepository.save(duplicate);
-    }
-
-    public void addStadiumWithDefaultCapacity(StadiumDTO dto, Integer defaultCapacity) {
-        Stadium stadium = createStadiumFromDTO(dto);
-        stadium.setCapacity(defaultCapacity);
-        stadiumRepository.save(stadium);
-    }
-
-    // PUT Methods
     public void updateStadiumName(Integer id, String name) {
         Stadium stadium = findStadium(id);
+        validateName(name);
         stadium.setName(name);
         stadiumRepository.save(stadium);
     }
 
     public void updateStadiumCity(Integer id, String city) {
         Stadium stadium = findStadium(id);
+        validateCity(city);
         stadium.setCity(city);
         stadiumRepository.save(stadium);
     }
 
     public void updateStadiumLocation(Integer id, String location) {
         Stadium stadium = findStadium(id);
+        if (location == null || location.trim().isEmpty()) throw new ApiException("Location cannot be null or empty");
         stadium.setLocation(location);
         stadiumRepository.save(stadium);
     }
 
     public void updateStadiumCapacity(Integer id, Integer capacity) {
         Stadium stadium = findStadium(id);
+        validateCapacity(capacity);
         stadium.setCapacity(capacity);
         stadiumRepository.save(stadium);
     }
 
-    public void updateStadiumParkingCapacity(Integer id, Integer parkingCapacity) {
-        Stadium stadium = findStadium(id);
-        stadium.setParkingCapacity(parkingCapacity);
-        stadiumRepository.save(stadium);
-    }
 
     public void updateStadiumStatus(Integer id, String status) {
         Stadium stadium = findStadium(id);
+        validateStatus(status);
         stadium.setStatus(status);
         stadiumRepository.save(stadium);
     }
 
-    // DELETE Methods
     public void deleteStadiumById(Integer id) {
         Stadium stadium = findStadium(id);
         stadiumRepository.delete(stadium);
     }
 
     public void deleteStadiumsByCity(String city) {
+        validateCity(city);
         List<Stadium> stadiums = stadiumRepository.findByCity(city);
-        if (stadiums.isEmpty()) {
-            throw new ApiException("No stadiums found in city: " + city);
-        }
+        if (stadiums.isEmpty()) throw new ApiException("No stadiums found in city: " + city);
         stadiumRepository.deleteAll(stadiums);
     }
 
     public void deleteStadiumsByStatus(String status) {
+        validateStatus(status);
         List<Stadium> stadiums = stadiumRepository.findByStatus(status);
-        if (stadiums.isEmpty()) {
-            throw new ApiException("No stadiums with status: " + status);
-        }
+        if (stadiums.isEmpty()) throw new ApiException("No stadiums found with status: " + status);
         stadiumRepository.deleteAll(stadiums);
     }
 
-    public void deleteStadiumsWithCapacityLessThan(Integer capacity) {
-        List<Stadium> stadiums = stadiumRepository.findByCapacityLessThan(capacity);
-        if (stadiums.isEmpty()) {
-            throw new ApiException("No stadiums with capacity less than: " + capacity);
-        }
-        stadiumRepository.deleteAll(stadiums);
-    }
 
     public void deleteAllStadiums() {
         stadiumRepository.deleteAll();
     }
 
-    // Utility Methods
     private Stadium findStadium(Integer id) {
+        if (id == null) throw new ApiException("Stadium ID cannot be null");
         Stadium stadium = stadiumRepository.findStadiumById(id);
-        if (stadium == null) {
-            throw new ApiException("Stadium not found");
-        }
+        if (stadium == null) throw new ApiException("Stadium not found");
         return stadium;
+    }
+
+    private void validateStadiumDTO(StadiumDTO dto) {
+        if (dto == null) throw new ApiException("Stadium data cannot be null");
+        validateName(dto.getName());
+        validateCity(dto.getCity());
+        validateCapacity(dto.getCapacity());
+        validateStatus(dto.getStatus());
+    }
+
+    private void validateName(String name) {
+        if (name == null || name.trim().isEmpty()) throw new ApiException("Name cannot be null or empty");
+    }
+
+    private void validateCity(String city) {
+        if (city == null || city.trim().isEmpty())
+            throw new ApiException("City cannot be null or empty");
+    }
+
+    private void validateCapacity(Integer capacity) {
+        if (capacity == null || capacity <= 0)
+            throw new ApiException("Capacity must be greater than 0");
+    }
+
+    private void validateStatus(String status) {
+        if (status == null || status.trim().isEmpty()) throw new ApiException("Status cannot be null or empty");
     }
 
     private Stadium createStadiumFromDTO(StadiumDTO dto) {

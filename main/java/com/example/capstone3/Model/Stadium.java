@@ -49,7 +49,7 @@ public class Stadium {
 
     @Column(columnDefinition = "varchar(50) not null default 'Available'")
     @NotEmpty(message = "Status cannot be empty")
-    @Pattern(regexp = "Available|Maintenance", message = "Status must be either 'Available' or 'Maintenance'")
+    @Pattern(regexp = "Available|Maintenance|close", message = "Status must be either 'Available' or 'Maintenance' or close ")
     private String status = "Available";
 
     @OneToMany(mappedBy = "stadium", cascade = CascadeType.ALL)

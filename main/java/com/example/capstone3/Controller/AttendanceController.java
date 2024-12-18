@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalTime;
 import java.util.List;
+//bushra
 
 @RestController
 @RequestMapping("/api/v1/attendance")
@@ -69,24 +70,18 @@ public class AttendanceController {
         return ResponseEntity.status(201).body(new ApiResponse("Attendance added successfully"));
     }
 
-    @PostMapping("/add-multiple")
-    public ResponseEntity addMultipleAttendances(@RequestBody @Valid List<AttendanceDTO> attendances) {
-        attendanceService.addMultipleAttendances(attendances);
-        return ResponseEntity.status(201).body(new ApiResponse("Multiple attendances added successfully"));
-    }
 
     @PostMapping("/mark-check-in/{id}")
     public ResponseEntity markAttendanceCheckIn(@PathVariable Integer id, @RequestBody @Valid LocalTime checkIn) {
-        attendanceService.markAttendanceCheckedIn(id, checkIn);
+        attendanceService.markAttendanceCheckedIn(id);
         return ResponseEntity.status(200).body(new ApiResponse("Attendance marked as checked-in"));
     }
 
     @PostMapping("/mark-check-out/{id}")
     public ResponseEntity markAttendanceCheckOut(@PathVariable Integer id, @RequestBody @Valid LocalTime checkOut) {
-        attendanceService.markAttendanceCheckedOut(id, checkOut);
+        attendanceService.markAttendanceCheckedOut(id);
         return ResponseEntity.status(200).body(new ApiResponse("Attendance marked as checked-out"));
     }
-
 
     @PutMapping("/update-status/{id}")
     public ResponseEntity updateAttendanceStatus(@PathVariable Integer id, @RequestBody @Valid String status) {

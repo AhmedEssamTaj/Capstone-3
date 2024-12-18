@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 
 import java.time.LocalTime;
+//bushra
 
 @Data
 @AllArgsConstructor
@@ -26,6 +27,6 @@ public class AttendanceDTO {
     private LocalTime checkIn;
     private LocalTime checkOut;
     @NotEmpty(message = "Status cannot be empty")
-    @Pattern(regexp = "Checked-in|Checked-out|Absent", message = "Status must be either 'Checked-in', 'Checked-out', or 'Absent'")
+    @Pattern(regexp = "Checked in|Checked out|Absent", message = "Status must be either 'Checked in', 'Checked out', or 'Absent'")
     private String status;
 }

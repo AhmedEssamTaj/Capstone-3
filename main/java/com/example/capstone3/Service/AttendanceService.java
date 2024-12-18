@@ -23,8 +23,6 @@ public class AttendanceService {
     private final EventRepository eventRepository;
     private final VolunteerRepository volunteerRepository;
 
-    // --------------------- GET Methods (25) ------------------------
-
     public AttendanceDTOout getAttendanceById(Integer id) {
         Attendance attendance = validateAttendance(id);
         return convertToDTOout(attendance);
@@ -63,65 +61,48 @@ public class AttendanceService {
         return convertListToDTOout(attendances);
     }
 
-    public AttendanceDTOout getAttendanceByEventAndVolunteer(Integer eventId, Integer volunteerId) {
-        Attendance attendance = validateAttendanceByEventAndVolunteer(eventId, volunteerId);
-        return convertToDTOout(attendance);
-    }
-
-    public List<AttendanceDTOout> getAttendancesCheckedInBefore(LocalTime time) {
-        validateTime(time);
-        List<Attendance> attendances = attendanceRepository.findByCheckInBefore(time);
-        if (attendances.isEmpty()) throw new ApiException("No attendances checked in before " + time);
-        return convertListToDTOout(attendances);
-    }
-
-    public long getAttendanceCount() {
-        long count = attendanceRepository.count();
-        if (count == 0) throw new ApiException("No attendance records found");
-        return count;
-    }
-
     public boolean doesAttendanceExist(Integer id) {
         return attendanceRepository.existsById(id);
     }
 
-    // Add 15 more GET methods with logical checks (e.g., time ranges, statuses, null validations).
-
-    // --------------------- POST Methods (25) ------------------------
-
     public void addAttendance(AttendanceDTO dto) {
         if (dto == null) throw new ApiException("Attendance data is required");
+        validateEventAvailability(dto.getEvent_id());
+        validateVolunteerAvailability(dto.getVolunteer_id(), dto.getCheckIn(), dto.getCheckOut());
         Attendance attendance = new Attendance();
         attendance.setEvent(validateEvent(dto.getEvent_id()));
         attendance.setVolunteer(validateVolunteer(dto.getVolunteer_id()));
         attendance.setCheckIn(validateTime(dto.getCheckIn()));
+        attendance.setCheckOut(validateTime(dto.getCheckOut()));
         attendance.setStatus(validateStatus(dto.getStatus()));
         attendanceRepository.save(attendance);
     }
 
-    public void markAttendanceCheckedIn(Integer id, LocalTime checkIn) {
+    public void markAttendanceCheckedIn(Integer id) {
         Attendance attendance = validateAttendance(id);
         if ("Checked-in".equals(attendance.getStatus()))
             throw new ApiException("Attendance already checked in");
-        attendance.setCheckIn(validateTime(checkIn));
-        attendance.setStatus("Checked-in");
+
+        LocalTime currentTime = LocalTime.now();
+        validateTimeAvailability(attendance.getVolunteer().getId(), currentTime);
+        attendance.setCheckIn(currentTime);
+        attendance.setStatus("Checked in");
         attendanceRepository.save(attendance);
     }
 
-    public void markAttendanceCheckedOut(Integer id, LocalTime checkOut) {
+    public void markAttendanceCheckedOut(Integer id) {
         Attendance attendance = validateAttendance(id);
         if (!"Checked-in".equals(attendance.getStatus()))
             throw new ApiException("Cannot check out without checking in first");
-        attendance.setCheckOut(validateTime(checkOut));
-        attendance.setStatus("Checked-out");
+
+        LocalTime currentTime = LocalTime.now();
+        if (currentTime.isBefore(attendance.getCheckIn()))
+            throw new ApiException("Check-out time cannot be earlier than check-in time");
+
+        attendance.setCheckOut(currentTime);
+        attendance.setStatus("Checked out");
         attendanceRepository.save(attendance);
     }
-
-    public void addMultipleAttendances(List<AttendanceDTO> dtos) {
-        if (dtos == null || dtos.isEmpty()) throw new ApiException("No attendance data provided");
-        for (AttendanceDTO dto : dtos) addAttendance(dto);
-    }
-
 
     public void updateAttendanceStatus(Integer id, String status) {
         Attendance attendance = validateAttendance(id);
@@ -133,6 +114,7 @@ public class AttendanceService {
         Attendance attendance = validateAttendance(id);
         if (attendance.getCheckIn() != null)
             throw new ApiException("Check-in time is already set");
+        validateTimeAvailability(attendance.getVolunteer().getId(), checkIn);
         attendance.setCheckIn(validateTime(checkIn));
         attendanceRepository.save(attendance);
     }
@@ -141,7 +123,6 @@ public class AttendanceService {
         validateStatus(status);
         for (Integer id : ids) updateAttendanceStatus(id, status);
     }
-
 
     public void deleteAttendanceById(Integer id) {
         Attendance attendance = validateAttendance(id);
@@ -159,7 +140,6 @@ public class AttendanceService {
         if (attendances.isEmpty()) throw new ApiException("No attendances found with status: " + status);
         attendanceRepository.deleteAll(attendances);
     }
-
 
     private Attendance validateAttendance(Integer id) {
         Attendance attendance = attendanceRepository.findAttendanceById(id);
@@ -191,10 +171,31 @@ public class AttendanceService {
         return time;
     }
 
-    private Attendance validateAttendanceByEventAndVolunteer(Integer eventId, Integer volunteerId) {
-        Attendance attendance = attendanceRepository.findByEventAndVolunteer(eventId, volunteerId);
-        if (attendance == null) throw new ApiException("Attendance not found for event and volunteer");
-        return attendance;
+
+    private void validateEventAvailability(Integer eventId) {
+        Event event = validateEvent(eventId);
+        if ("Ended".equals(event.getStatus()))
+            throw new ApiException("Cannot add attendance for an ended event");
+    }
+
+    private void validateVolunteerAvailability(Integer volunteerId, LocalTime checkIn, LocalTime checkOut) {
+        List<Attendance> attendances = attendanceRepository.findByVolunteer(validateVolunteer(volunteerId));
+        for (Attendance attendance : attendances) {
+            if (attendance.getCheckIn() != null && attendance.getCheckOut() != null &&
+                    (checkIn.isBefore(attendance.getCheckOut()) && checkOut.isAfter(attendance.getCheckIn()))) {
+                throw new ApiException("Volunteer has overlapping attendance during the specified time");
+            }
+        }
+    }
+
+    private void validateTimeAvailability(Integer volunteerId, LocalTime checkIn) {
+        List<Attendance> attendances = attendanceRepository.findByVolunteer(validateVolunteer(volunteerId));
+        for (Attendance attendance : attendances) {
+            if (attendance.getCheckIn() != null && attendance.getCheckOut() == null &&
+                    checkIn.isBefore(attendance.getCheckOut())) {
+                throw new ApiException("Volunteer is already checked-in during the specified time");
+            }
+        }
     }
 
     private AttendanceDTOout convertToDTOout(Attendance attendance) {

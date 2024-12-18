@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-
+//bushra
 @RestController
 @RequestMapping("/api/v1/event")
 @RequiredArgsConstructor
@@ -25,6 +25,10 @@ public class EventController {
         return ResponseEntity.status(200).body(eventService.getAllEvents());
     }
 
+    @GetMapping("/get-from-dates/{from}/{to}")
+    public ResponseEntity getEventById(@PathVariable LocalDate from,@PathVariable LocalDate to) {
+        return ResponseEntity.status(200).body(eventService.getEventsBetweenDates(from,to));
+    }
     @GetMapping("/get-by-id/{id}")
     public ResponseEntity getEventById(@PathVariable Integer id) {
         return ResponseEntity.status(200).body(eventService.getEventDetailsById(id));
@@ -76,13 +80,13 @@ public class EventController {
         return ResponseEntity.status(200).body(new ApiResponse("Events with status deleted successfully"));
     }
 
-    @GetMapping("/get-upcoming/{today}")
-    public ResponseEntity getUpcomingEvents(@PathVariable LocalDate today) {
-        return ResponseEntity.status(200).body(eventService.getUpcomingEvents(today));
+    @GetMapping("/get-upcoming")
+    public ResponseEntity getUpcomingEvents() {
+        return ResponseEntity.status(200).body(eventService.getUpcomingEvents());
     }
 
-    @GetMapping("/get-past/{today}")
-    public ResponseEntity getPastEvents(@PathVariable LocalDate today) {
-        return ResponseEntity.status(200).body(eventService.getPastEvents(today));
+    @GetMapping("/get-past")
+    public ResponseEntity getPastEvents() {
+        return ResponseEntity.status(200).body(eventService.getPastEvents());
     }
 }
