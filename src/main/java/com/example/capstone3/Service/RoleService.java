@@ -21,6 +21,7 @@ public class RoleService {
     private final RoleRepository roleRepository;
     private final EventRepository eventRepository;
     private final VolunteerRepository volunteerRepository;
+//bushra
 
     public RoleDTOout getRoleById(Integer id) {
         if (roleRepository.findById(id).isPresent()) {throw new ApiException("Role not found");}

@@ -23,53 +23,41 @@ public class RoleController {
         List<RoleDTOout> roles = roleService.getAllRoles();
         return ResponseEntity.status(200).body(roles);
     }
-
     @GetMapping("/get-by-id/{id}")
     public ResponseEntity getRoleById(@PathVariable Integer id) {
         RoleDTOout role = roleService.getRoleById(id);
         return ResponseEntity.status(200).body(role);
     }
-
     @GetMapping("/get-by-event/{eventId}")
     public ResponseEntity getRolesByEvent(@PathVariable Integer eventId) {
         List<RoleDTOout> roles = roleService.getRolesByEventId(eventId);
         return ResponseEntity.status(200).body(roles);
     }
-
     @GetMapping("/get-by-volunteer/{volunteerId}")
     public ResponseEntity getRolesByVolunteer(@PathVariable Integer volunteerId) {
         List<RoleDTOout> roles = roleService.getRolesByVolunteerId(volunteerId);
         return ResponseEntity.status(200).body(roles);
     }
-
     @GetMapping("/count")
     public ResponseEntity countRoles() {
         long count = roleService.countRoles();
         return ResponseEntity.status(200).body(count);
     }
-
     @PostMapping("/add")
     public ResponseEntity addRole(@RequestBody @Valid RoleDTO dto) {
         roleService.addRole(dto);
         return ResponseEntity.status(200).body(new ApiResponse("Role added successfully"));
     }
-
-
-
     @PutMapping("/update/{id}")
     public ResponseEntity updateRoleDetails(@PathVariable Integer id, @RequestBody @Valid RoleDTO dto) {
         roleService.updateRoleDetails(id, dto);
         return ResponseEntity.status(200).body(new ApiResponse("Role updated successfully"));
     }
-
-
-
     @PutMapping("/update-description/{id}")
     public ResponseEntity updateRoleDescription(@PathVariable Integer id, @RequestParam String description) {
         roleService.updateRoleDescription(id, description);
         return ResponseEntity.status(200).body(new ApiResponse("Role description updated successfully"));
     }
-
     @DeleteMapping("/delete/{id}")
     public ResponseEntity deleteRole(@PathVariable Integer id) {
         roleService.deleteRoleById(id);

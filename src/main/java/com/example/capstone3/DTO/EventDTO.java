@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 @AllArgsConstructor
 @Data
+
 public class EventDTO {
 
     private Integer id;

@@ -26,13 +26,11 @@ public class AttendanceController {
         List<AttendanceDTOout> attendances = attendanceService.getAllAttendances();
         return ResponseEntity.status(200).body(attendances);
     }
-
     @GetMapping("/get-by-id/{id}")
     public ResponseEntity getAttendanceById(@PathVariable Integer id) {
         AttendanceDTOout attendance = attendanceService.getAttendanceById(id);
         return ResponseEntity.status(200).body(attendance);
     }
-
     @GetMapping("/get-by-event/{eventId}")
     public ResponseEntity getAttendancesByEvent(@PathVariable Integer eventId) {
         List<AttendanceDTOout> attendances = attendanceService.getAttendancesByEvent(eventId);
@@ -42,33 +40,26 @@ public class AttendanceController {
     public ResponseEntity getAttendanceCountAbsent(@PathVariable Integer volunteer_Id) {
         return ResponseEntity.status(200).body((new ApiResponse("the total Absent "+attendanceService.getAttendanceCountAbsent(volunteer_Id))));
     }
-
     @GetMapping("/get-by-volunteer/{volunteerId}")
     public ResponseEntity getAttendancesByVolunteer(@PathVariable Integer volunteerId) {
         List<AttendanceDTOout> attendances = attendanceService.getAttendancesByVolunteer(volunteerId);
         return ResponseEntity.status(200).body(attendances);
     }
-
     @PostMapping("/add")
     public ResponseEntity addAttendance(@RequestBody @Valid AttendanceDTO attendanceDTO) {
         attendanceService.addAttendance(attendanceDTO);
         return ResponseEntity.status(201).body(new ApiResponse("Attendance added successfully"));
     }
-
-
     @PostMapping("/mark-check-in/{volunteer_id}/{event_id}")
     public ResponseEntity markAttendanceCheckIn(@PathVariable Integer volunteer_id, @PathVariable Integer event_id) {
         attendanceService.markAttendanceCheckedIn(volunteer_id, event_id);
         return ResponseEntity.status(200).body(new ApiResponse("Attendance marked as checked-in"));
     }
-
     @PostMapping("/mark-check-out/{volunteer_id}/{event_id}")
     public ResponseEntity markAttendanceCheckOut(@PathVariable Integer volunteer_id, @PathVariable Integer event_id) {
         attendanceService.markAttendanceCheckedOut(volunteer_id, event_id);
         return ResponseEntity.status(200).body(new ApiResponse("Attendance marked as checked-out"));
     }
-
-
     @DeleteMapping("/delete/{volunteer_id}/{event_id}")
     public ResponseEntity deleteAttendanceById(@PathVariable Integer volunteer_id, @PathVariable Integer event_id) {
         attendanceService.deleteAttendanceById(volunteer_id, event_id);
