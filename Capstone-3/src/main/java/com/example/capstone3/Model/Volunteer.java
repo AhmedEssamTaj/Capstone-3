@@ -1,5 +1,6 @@
 package com.example.capstone3.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -42,9 +43,13 @@ public class Volunteer {
     @Column(columnDefinition = "boolean not null default false")
     private boolean isTrained = false;
 
-    @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
-    private Set<Training> trainings;
+//    @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
+//    private Set<Training> trainings;
 
+    @ManyToOne
+    @JoinColumn(name = "training_id", referencedColumnName = "id")
+    @JsonIgnore
+    private Training training;
 
     @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
     private  Set<Attendance>attendances;
@@ -55,15 +60,14 @@ public class Volunteer {
     @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
     private Set<VolunteerRating> volunteerRatings;
 
-    @OneToOne(cascade =CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    private Role role;
+    @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
+    private Set<Role> role;
 
     @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
     private Set<VolunteerSkills> volunteerSkills;
 
     @ManyToOne
-    @JoinColumn(name = "event_id", referencedColumnName = "id")
+//    @JoinColumn(name = "event_id", referencedColumnName = "id")
     @JsonIgnore
     private Event event;
 

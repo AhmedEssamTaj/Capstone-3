@@ -22,7 +22,7 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(columnDefinition = "varchar(50) not null")
+    @Column(columnDefinition = "varchar(50) not null") // UNIQUE
     @NotEmpty(message = "Title cannot be empty")
     private String name;
 
@@ -45,7 +45,8 @@ public class Event {
     private Integer maxCapacity;
 
     @ManyToOne
-    @JoinColumn(name = "stadium_id", referencedColumnName = "id")
+//    @JoinColumn(name = "stadium_id", referencedColumnName = "id")
+    @JsonIgnore
     @NotNull(message = "Stadium cannot be null")
     private Stadium stadium;
 
@@ -54,7 +55,7 @@ public class Event {
 
 
 
-    @Column(columnDefinition = "varchar(20) default Hold")
+    @Column(columnDefinition = "varchar(20) default 'Hold'")
     @NotEmpty(message = "Status cannot be empty")
     @Pattern(regexp = "^(Run|Ended|Hold|Accept request)+$", message = "Status must be Run or Ended or Hold or Accept request")
     private String status="Hold";

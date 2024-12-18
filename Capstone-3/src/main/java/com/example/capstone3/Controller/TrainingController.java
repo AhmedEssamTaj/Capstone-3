@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/Training")
+@RequestMapping("/api/v1/training")
 @RequiredArgsConstructor
 public class TrainingController {
 
@@ -21,7 +21,7 @@ public class TrainingController {
         return ResponseEntity.status(200).body(trainingService.getAllTraining());
     }
 
-    @GetMapping("/get-Training-DTO")
+    @GetMapping("/get-training-dto")
     public ResponseEntity getTrainingDTO(){
         return ResponseEntity.status(200).body(trainingService.getTrainingDTO());
 

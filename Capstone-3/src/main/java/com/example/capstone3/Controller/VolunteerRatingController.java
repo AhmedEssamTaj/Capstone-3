@@ -20,9 +20,9 @@ public class VolunteerRatingController {
     public ResponseEntity getAll (){
         return ResponseEntity.status(200).body(volunteerRatingService.getAllVolunteerRating());
     }
-    @PostMapping("/add")
-    public ResponseEntity addVolunteerRating(@RequestBody @Valid VolunteerRating volunteerRating) {
-        volunteerRatingService.addVolunteerRating(volunteerRating);
+    @PostMapping("/add/{volunteerId}/{eventId}")
+    public ResponseEntity addVolunteerRating(@RequestBody @Valid VolunteerRating volunteerRating, @PathVariable Integer volunteerId, @PathVariable Integer eventId) {
+        volunteerRatingService.addVolunteerRating(volunteerRating, volunteerId, eventId);
         return ResponseEntity.status(200).body(new ApiResponse("Successfully added volunteer rating"));
     }
     @PutMapping("/update")
@@ -41,5 +41,11 @@ public class VolunteerRatingController {
     @GetMapping("/get-volunteer/{volunteerId}")
     public ResponseEntity getAllRatingByVolunteer (@PathVariable Integer volunteerId) {
         return ResponseEntity.status(200).body(volunteerRatingService.getAllVolunteerRatingByVolunteerId(volunteerId));
+    }
+
+    // Endpoint to get the average rating of a volunteer by his id --- Aishtiaq (1) ----
+    @GetMapping("/get-average-volunteer/{volunteerId}")
+    public ResponseEntity averageRatingForVolunteer(@PathVariable Integer volunteerId) {
+        return ResponseEntity.status(200).body(volunteerRatingService.volunteersByTheHighestAverageOfRatings(volunteerId));
     }
 }

@@ -41,6 +41,7 @@ public class TrainingService {
 
         return trainingDTOS;
     }
+
     public void addTraining(Training training){
 
         trainingRepository.save(training);

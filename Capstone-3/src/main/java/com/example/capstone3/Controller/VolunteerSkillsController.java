@@ -20,9 +20,9 @@ public class VolunteerSkillsController {
     public ResponseEntity getAll (){
         return ResponseEntity.status(200).body(volunteerSkillsService.getAllVolunteerSkills());
     }
-    @PostMapping("/add")
-    public ResponseEntity addVolunteerSkill(@RequestBody @Valid VolunteerSkills volunteerSkills) {
-        volunteerSkillsService.addVolunteerSkills(volunteerSkills);
+    @PostMapping("/add/{volunteerId}")
+    public ResponseEntity addVolunteerSkill(@RequestBody @Valid VolunteerSkills volunteerSkills,@PathVariable Integer volunteerId) {
+        volunteerSkillsService.addVolunteerSkills(volunteerSkills,volunteerId);
         return ResponseEntity.status(200).body(new ApiResponse("Successfully added volunteer skill"));
     }
     @PutMapping("/update")
@@ -42,6 +42,8 @@ public class VolunteerSkillsController {
     public ResponseEntity getAllSkillsByVolunteer (@PathVariable Integer volunteerId) {
         return ResponseEntity.status(200).body(volunteerSkillsService.getVolunteerSkillsByVolunteerId(volunteerId));
     }
+
+
 
 
 }

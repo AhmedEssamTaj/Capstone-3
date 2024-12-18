@@ -33,11 +33,12 @@ public class VolunteerSkillsService {
     }
 
     // add volunteer skills
-    public void  addVolunteerSkills(VolunteerSkills volunteerSkills) {
-        Volunteer volunteer = volunteerRepository.findVolunteerById(volunteerSkills.getId());
+    public void  addVolunteerSkills(VolunteerSkills volunteerSkills, Integer volunteerId) {
+        Volunteer volunteer = volunteerRepository.findVolunteerById(volunteerId);
         if (volunteer == null) {
             throw new ApiException("no volunteer found");
         }
+        volunteerSkills.setVolunteer(volunteer);
         volunteerSkillsRepository.save(volunteerSkills);
     }
 

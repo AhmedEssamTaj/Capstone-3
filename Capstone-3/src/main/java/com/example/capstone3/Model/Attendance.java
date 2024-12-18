@@ -19,18 +19,18 @@ public class Attendance {
     private Integer id;
     @ManyToOne
     @JoinColumn(name = "event_id", referencedColumnName = "id")
-    @NotNull(message = "Event cannot be null")
+//    @NotNull(message = "Event cannot be null")
     private Event event;
     @ManyToOne
-    @JoinColumn(name = "volunteer_id", referencedColumnName = "id")
-    @NotEmpty(message = "Volunteer cannot be empty")
+//    @JoinColumn(name = "volunteer_id", referencedColumnName = "id")
+//    @NotEmpty(message = "Volunteer cannot be empty")
     @JsonIgnore
     private Volunteer volunteer;
 
-    @Column(columnDefinition = "Date")
+    @Column(columnDefinition = "time") // change from Date to time
     private LocalTime checkIn;
 
-    @Column(columnDefinition = "Date ")
+    @Column(columnDefinition = "time") // change from Date to time
     private LocalTime checkOut;
 
     @Column(columnDefinition = "varchar(50)")

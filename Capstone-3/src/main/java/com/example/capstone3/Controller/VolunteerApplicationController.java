@@ -1,8 +1,10 @@
 package com.example.capstone3.Controller;
 
 import com.example.capstone3.ApiResponse.ApiResponse;
+import com.example.capstone3.DTO.RoleDTO;
 import com.example.capstone3.Model.Volunteer;
 import com.example.capstone3.Model.VolunteerApplication;
+import com.example.capstone3.Repository.VolunteerApplicationRepository;
 import com.example.capstone3.Service.VolunteerApplicationService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -15,14 +17,16 @@ import org.springframework.web.bind.annotation.*;
 public class VolunteerApplicationController {
 
     private final VolunteerApplicationService volunteerApplicationService;
+    private final VolunteerApplicationRepository volunteerApplicationRepository;
 
     @GetMapping("/get-all")
     public ResponseEntity getAll (){
         return ResponseEntity.status(200).body(volunteerApplicationService.getAllVolunteerApplications());
     }
-    @PostMapping("/add")
-    public ResponseEntity addVolunteerApplication(@RequestBody @Valid VolunteerApplication volunteerApplication) {
-        volunteerApplicationService.addVolunteerApplication(volunteerApplication);
+    @PostMapping("/add/{volunteerId}/{eventId}")
+    public ResponseEntity addVolunteerApplication(@RequestBody @Valid VolunteerApplication volunteerApplication
+    , @PathVariable Integer volunteerId, @PathVariable Integer eventId) {
+        volunteerApplicationService.addVolunteerApplication(volunteerApplication, volunteerId, eventId);
         return ResponseEntity.status(200).body(new ApiResponse("Successfully added volunteer application"));
     }
     @PutMapping("/update")
@@ -41,6 +45,20 @@ public class VolunteerApplicationController {
     @GetMapping("/get-volunteer/{volunteerId}")
     public ResponseEntity getAllByVolunteer (@PathVariable Integer volunteerId) {
         return ResponseEntity.status(200).body(volunteerApplicationService.getVolunteerApplications(volunteerId));
+    }
+
+    // Endpoint to accept volunteer application ---- Ahmed (1) -----
+    @PutMapping("/accept/{volunteerApplicationId}")
+    public ResponseEntity acceptVolunteerApplication (@PathVariable Integer volunteerApplicationId, @RequestBody @Valid RoleDTO roleDTO) {
+        volunteerApplicationService.acceptVolunteerApplication(volunteerApplicationId, roleDTO);
+        return ResponseEntity.status(200).body(new ApiResponse("Successfully accepted role application"));
+    }
+
+    // Endpoint to reject volunteer application ---- Ahmed (2) -----
+    @PutMapping("/reject/{volunteerApplicationId}")
+    public ResponseEntity rejectVolunteerApplication (@PathVariable Integer volunteerApplicationId) {
+        volunteerApplicationService.rejcetApplication(volunteerApplicationId);
+        return ResponseEntity.status(200).body(new ApiResponse("Successfully rejected volunteer application"));
     }
 
 }

@@ -16,15 +16,15 @@ public class Role {
     private Integer id;
 
     @Column(columnDefinition = "varchar(255) not null")
-    @NotEmpty(message = "Name cannot be empty")
+//    @NotEmpty(message = "Name cannot be empty")
     private String name;
 
     @Column(columnDefinition = "text not null")
-    @NotEmpty(message = "Description cannot be empty")
+//    @NotEmpty(message = "Description cannot be empty")
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "volunteer_id", referencedColumnName = "id")
+//    @JoinColumn(name = "volunteer_id", referencedColumnName = "id")
     @JsonIgnore
     private Volunteer volunteer;
 

@@ -1,5 +1,6 @@
 package com.example.capstone3.Controller;
 
+import com.example.capstone3.Model.Training;
 import com.example.capstone3.Model.Volunteer;
 import com.example.capstone3.Service.VolunteerService;
 import jakarta.validation.Valid;
@@ -45,5 +46,11 @@ public class VolunteerController {
        volunteerService.deleteVolunteer(id);
         return ResponseEntity.status(200).body("Volunteer deleted successfully");
 
+    }
+
+    @PutMapping("/assign-training/{volunteerId}/{trainingId}")
+    public ResponseEntity assignVolunteerToTraining (@PathVariable Integer volunteerId,@PathVariable Integer trainingId){
+        volunteerService.assignVolunteerToTraining(volunteerId,trainingId);
+        return ResponseEntity.status(200).body("Volunteer assigned successfully");
     }
 }

@@ -5,6 +5,7 @@ import com.example.capstone3.DTO.EventDTO;
 import com.example.capstone3.DTO.EventDTOout;
 import com.example.capstone3.DTO.VolunteerDTO;
 import com.example.capstone3.Model.Event;
+import com.example.capstone3.Model.Stadium;
 import com.example.capstone3.Repository.EventRepository;
 import com.example.capstone3.Repository.StadiumRepository;
 import com.example.capstone3.Repository.VolunteerRepository;
@@ -42,6 +43,10 @@ public class EventService {
 
     public void addEvent(EventDTO event_in) {
         Event event=new Event();
+        Stadium stadium = stadiumRepository.findStadiumById(event_in.getStadium_id());
+        if (stadium == null) {
+            throw new ApiException("Stadium not found");
+        }
         if(stadiumRepository.findStadiumById(event_in.getStadium_id()).getStatus()!="Maintenance"){
         event.setName(event_in.getName());
         event.setDate(event_in.getDate());
@@ -50,8 +55,10 @@ public class EventService {
         event.setMaxCapacity(event_in.getMaxCapacity());
         event.setStatus(event_in.getStatus());
         event.setStadium(stadiumRepository.findStadiumById(event_in.getStadium_id()));
-        eventRepository.save(event);}
-        throw new ApiException("Event cant be added the stadium in Maintenance");
+        eventRepository.save(event);}else{
+            throw new ApiException("Event cant be added the stadium in Maintenance");
+        }
+
     }
 
     public void deleteEvent(Integer id) {

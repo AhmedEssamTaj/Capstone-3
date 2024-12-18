@@ -3,11 +3,14 @@ package com.example.capstone3.Service;
 
 import com.example.capstone3.ApiResponse.ApiException;
 import com.example.capstone3.DTO.VolunteerDTO;
+import com.example.capstone3.Model.Training;
 import com.example.capstone3.Model.Volunteer;
+import com.example.capstone3.Repository.TrainingRepository;
 import com.example.capstone3.Repository.VolunteerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +19,7 @@ import java.util.List;
 public class VolunteerService {
 
     private final VolunteerRepository volunteerRepository;
+    private final TrainingRepository trainingRepository;
 
 
     public List<Volunteer> getAllVolunteer(){
@@ -40,6 +44,8 @@ public class VolunteerService {
     public void addVolunteer(Volunteer volunteer){
 
         volunteerRepository.save(volunteer);
+//        assignVolunteerToTraining(volunteer.getId());
+
     }
 
     public void updateVolunteer(Integer id, Volunteer volunteer){
@@ -68,5 +74,34 @@ public class VolunteerService {
         }
 
         volunteerRepository.delete(volunteer);
+    }
+
+    // this method to assign the volunteer to a training session
+    public void assignVolunteerToTraining (Integer volunteerId, Integer trainingId){
+
+        Volunteer volunteer = volunteerRepository.findVolunteerById(volunteerId);
+        if (volunteer == null) {
+            throw new ApiException("not found Volunteer");
+        }
+
+        Training training = trainingRepository.findTrainingById(trainingId);
+        if (training == null) {
+            throw new ApiException("not found Training");
+        }
+
+        if (training.isCompleted()){
+            throw new ApiException("Training session is already completed. Please create a new session");
+        }
+
+        if (training.getVolunteers().size() >= training.getCapacity()) {
+            throw new ApiException("Training session is at full capacity. Please create a new session.");
+        }
+        training.getVolunteers().add(volunteer);
+        training.setEnrolledVolunteers(training.getEnrolledVolunteers()+1);
+        trainingRepository.save(training);
+
+        volunteer.setTraining(training);
+        volunteerRepository.save(volunteer);
+
     }
 }

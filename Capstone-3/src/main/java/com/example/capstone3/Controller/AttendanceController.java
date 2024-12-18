@@ -21,18 +21,21 @@ public class AttendanceController {
         return ResponseEntity.status(200).body(attendanceService.getAllAttendances());
     }
 
+
     @PutMapping("/Absent/{id}")
     public ResponseEntity updateAttendanceAbsent(@PathVariable Integer id) {
         attendanceService.updateAttendanceAbsent(id);
         return ResponseEntity.status(200).body(new ApiResponse("attendance updated successfully"));
     }
 
+    // endpoint to mark the volunteer check in time  --- Bushra (1)
     @PutMapping("/update-check-in/{volunteer_id}/{event_id}")
     public ResponseEntity updateCheckIn(@PathVariable Integer volunteer_id,@PathVariable Integer event_id, @RequestBody @Valid LocalTime checkIn) {
         attendanceService.updateAttendanceCheckIn(volunteer_id,event_id, checkIn);
         return ResponseEntity.status(200).body(new ApiResponse("record updated"));
     }
 
+    // endpoint to mark the volunteer check out time   --- Bushra (2)
     @PutMapping("/update-check-out/{volunteer_id}/{event_id}")
     public ResponseEntity updateCheckOut(@PathVariable Integer volunteer_id,@PathVariable Integer event_id, @RequestBody @Valid LocalTime checkOut) {
         attendanceService.updateAttendanceCheckOut(volunteer_id,event_id, checkOut);

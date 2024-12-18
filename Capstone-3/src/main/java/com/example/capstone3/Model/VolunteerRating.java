@@ -16,6 +16,9 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"volunteer_id", "event_id"}) // this to make it so that only one rating per event is allowed for a volunteer
+})
 public class VolunteerRating {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,16 +35,20 @@ public class VolunteerRating {
     private String feedback;
 
     @ManyToOne
+    @JoinColumn(name = "event_id", referencedColumnName = "id", nullable = false)
     @JsonIgnore
     private Event event;
 
     @ManyToOne
+    @JoinColumn(name = "volunteer_id", referencedColumnName = "id", nullable = false)
     @JsonIgnore
     private Volunteer volunteer;
 
-    @ManyToOne
-    @JsonIgnore
-    private Stadium stadium;
+    // i dont think wee need this relation! since the event is already connected to a stadium
+
+//    @ManyToOne
+//    @JsonIgnore
+//    private Stadium stadium;
 
 //    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
 //    private Set<VolunteerApplication> volunteerApplications;

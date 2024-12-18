@@ -37,6 +37,7 @@ public class EventController {
         return ResponseEntity.status(200).body("Event deleted");
     }
 
+
     @GetMapping("/get-by-id/{id}")
     public ResponseEntity getById(@PathVariable Integer id) {
 

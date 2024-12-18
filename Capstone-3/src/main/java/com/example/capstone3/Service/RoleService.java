@@ -3,7 +3,9 @@ package com.example.capstone3.Service;
 import com.example.capstone3.ApiResponse.ApiException;
 import com.example.capstone3.DTO.RoleDTO;
 import com.example.capstone3.DTO.RoleDTOout;
+import com.example.capstone3.Model.Event;
 import com.example.capstone3.Model.Role;
+import com.example.capstone3.Model.Volunteer;
 import com.example.capstone3.Repository.EventRepository;
 import com.example.capstone3.Repository.RoleRepository;
 import com.example.capstone3.Repository.VolunteerRepository;
@@ -41,6 +43,11 @@ public class RoleService {
         Role new_role=new Role();
         new_role.setName(role.getName());
         new_role.setDescription(role.getDescription());
+        Event event = eventRepository.findEventById(role.getEvent_id());
+        Volunteer volunteer = volunteerRepository.findVolunteerById(role.getVolunteer_id());
+        if (volunteer == null || event == null) {
+            throw new ApiException("Volunteer or event not found");
+        }
         new_role.setEvent(eventRepository.findEventById(role.getEvent_id()));
         new_role.setVolunteer(volunteerRepository.findVolunteerById(role.getVolunteer_id()));
         roleRepository.save(new_role);

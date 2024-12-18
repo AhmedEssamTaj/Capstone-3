@@ -42,19 +42,17 @@ public class VolunteerRatingService {
     }
 
     // method to add ration to a volunteer
-    public void addVolunteerRating(VolunteerRating volunteerRating){
+    public void addVolunteerRating(VolunteerRating volunteerRating, Integer volunteerId, Integer eventId){
 
-        Stadium stadium = stadiumRepository.findStadiumById(volunteerRating.getStadium().getId());
-        Event event = eventRepository.findEventById(volunteerRating.getEvent().getId());
-        Volunteer volunteer = volunteerRepository.findVolunteerById(volunteerRating.getVolunteer().getId());
+        Event event = eventRepository.findEventById(eventId);
+        Volunteer volunteer = volunteerRepository.findVolunteerById(volunteerId);
 
-        if (volunteer == null || event == null || stadium == null){
-            throw new ApiException("no volunteer or event or stadium was found");
+        if (volunteer == null || event == null){
+            throw new ApiException("no volunteer or event was found");
         }
         // assign upon creation
         volunteerRating.setVolunteer(volunteer);
         volunteerRating.setEvent(event);
-        volunteerRating.setStadium(stadium);
         volunteerRatingRepository.save(volunteerRating);
 
     }

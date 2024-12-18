@@ -19,6 +19,9 @@ public class VolunteerApplicationService {
     private final EventRepository eventRepository;
     private final RoleRepository roleRepository;
     private final AttendanceRepository attendanceRepository;
+    // test
+    private final RoleService roleService;
+    private final StadiumRepository stadiumRepository;
 
     // method to get ALL the applications
     public List<VolunteerApplication> getAllVolunteerApplications() {
@@ -31,11 +34,20 @@ public class VolunteerApplicationService {
     }
 
     // method to add a volunteer application
-    public void addVolunteerApplication(VolunteerApplication volunteerApplication) {
-        Volunteer volunteer = volunteerRepository.findVolunteerById(volunteerApplication.getVolunteer().getId());
-        Event event = eventRepository.findEventById(volunteerApplication.getEvent().getId());
+    public void addVolunteerApplication(VolunteerApplication volunteerApplication, Integer volunteerId,Integer eventId) {
+        Volunteer volunteer = volunteerRepository.findVolunteerById(volunteerId);
+        Event event = eventRepository.findEventById(eventId);
+
         if (volunteer == null || event == null) {
             throw new ApiException("Volunteer or event not found");
+        }
+        Stadium stadium= stadiumRepository.findStadiumById(event.getStadium().getId());
+        if (stadium == null) {
+            throw new ApiException("Stadium not found");
+        }
+
+        if (volunteerApplicationRepository.existsVolunteerApplicationByVolunteerIdAndEventId(volunteerId, eventId)) {
+            throw new ApiException("Volunteer already has an application for this event");
         }
         // assign upon creation
         volunteerApplication.setVolunteer(volunteer);
@@ -70,14 +82,18 @@ public class VolunteerApplicationService {
         if (volunteerApplication == null) {
             throw new ApiException("Volunteer application not found");
         }
-        volunteerApplication.setStatus("accepted");
+        if (volunteerApplication.getStatus().equals("Approved")){
+            throw new ApiException("Volunteer application is already approved");
+        }
+        volunteerApplication.setStatus("Approved");
         volunteerApplicationRepository.save(volunteerApplication);
-        Role role = new Role();
-        role.setName(roleDTO.getName());
-        role.setDescription(roleDTO.getDescription());
-        role.setVolunteer(volunteerApplication.getVolunteer());
-        role.setEvent(volunteerApplication.getEvent());
-        roleRepository.save(role);
+//        Role role = new Role();
+//        role.setName(roleDTO.getName());
+//        role.setDescription(roleDTO.getDescription());
+//        role.setVolunteer(volunteerApplication.getVolunteer());
+//        role.setEvent(volunteerApplication.getEvent());
+//        roleRepository.save(role);
+        roleService.addRole(roleDTO);
 
         Attendance attendance = new Attendance();
         attendance.setVolunteer(volunteerApplication.getVolunteer());
@@ -94,7 +110,10 @@ public class VolunteerApplicationService {
         if (volunteerApplication == null) {
             throw new ApiException("Volunteer application not found");
         }
-        volunteerApplication.setStatus("rejected");
+        if (volunteerApplication.getStatus().equals("Approved")){
+            throw new ApiException("Volunteer application is already approved");
+        }
+        volunteerApplication.setStatus("Rejected");
         volunteerApplicationRepository.save(volunteerApplication);
     }
 

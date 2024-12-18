@@ -2,6 +2,7 @@ package com.example.capstone3.DTO;
 
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -13,7 +14,8 @@ public class RoleDTO {
     private String name;
     @NotEmpty(message = "Description cannot be empty")
     private String description;
-    @NotEmpty(message = "Description cannot be empty")
+    @NotNull(message = "volunteer_id cannot be empty")
     private Integer volunteer_id;
+    @NotNull(message = "event_id cannot be empty")
     private Integer event_id;
 }

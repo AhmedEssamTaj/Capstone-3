@@ -66,7 +66,8 @@ public class AttendanceService {
         }
 
         attendance.setCheckIn(checkIn);
-        attendance.setStatus("checkIn");
+//        attendance.setStatus("checkIn");
+        attendance.setStatus("Checked-in");
         attendanceRepository.save(attendance);
 
     }

@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.util.Set;
+
 @Entity
 @Data
 @Getter
@@ -41,8 +43,7 @@ public class Trainer {
     @Column(columnDefinition = "int not null")
     private Integer experienceYears;
 
-    @OneToOne
-    @PrimaryKeyJoinColumn
-    private Training training;
+    @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL)
+    private Set<Training> trainings;
 
 }
