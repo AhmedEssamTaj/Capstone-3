@@ -12,6 +12,7 @@ public interface TrainingRepository extends JpaRepository<Training,Integer> {
 
     Training findTrainingById(Integer id);
 
-    //  get Trainer's Most Recent Upcoming Event (Aishtiaq-6)    @Query("SELECT t FROM Training t WHERE t.trainer.id = ?1 AND t.startDate > CURRENT_DATE ORDER BY t.startDate ASC")
+    //  get Trainer's Most Recent Upcoming Event (Aishtiaq-6)  
+    @Query("SELECT t FROM Training t WHERE t.trainer.id = ?1 AND t.startDate > CURRENT_DATE ORDER BY t.startDate ASC")
     List<Training> findUpcomingEventsByTrainerId(Integer trainerId);
 }
