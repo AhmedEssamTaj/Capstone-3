@@ -37,6 +37,14 @@ public class AttendanceService {
       return volunteerAbsent.size();
 
     }
+    public void updateAttendanceStatusAbsent(Integer volunteer_id, Integer event_id) {
+        Attendance attendance = attendanceRepository.findAttendanceByVolunteer_IdAndEvent_Id(volunteer_id,event_id);
+        if (attendance==null){
+            throw new ApiException("Record not found");
+        }
+        attendance.setStatus("Absent");
+        attendanceRepository.save(attendance);
+    }
     public List<AttendanceDTOout> getAllAttendances() {
         List<Attendance> attendances = attendanceRepository.findAll();
         if (attendances.isEmpty()) throw new ApiException("No attendances found");

@@ -50,6 +50,12 @@ public class AttendanceController {
         attendanceService.addAttendance(attendanceDTO);
         return ResponseEntity.status(201).body(new ApiResponse("Attendance added successfully"));
     }
+    @PutMapping("/absent/{volunteerId}/{eventId}")
+    public ResponseEntity absentAttendance(@PathVariable Integer volunteerId, @PathVariable Integer eventId) {
+        attendanceService.updateAttendanceStatusAbsent(volunteerId, eventId);
+        return ResponseEntity.status(201).body(new ApiResponse("Attendance absent successfully"));
+    }
+
     @PostMapping("/mark-check-in/{volunteer_id}/{event_id}")
     public ResponseEntity markAttendanceCheckIn(@PathVariable Integer volunteer_id, @PathVariable Integer event_id) {
         attendanceService.markAttendanceCheckedIn(volunteer_id, event_id);
