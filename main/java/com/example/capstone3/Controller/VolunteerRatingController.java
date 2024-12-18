@@ -44,7 +44,7 @@ public class VolunteerRatingController {
 
     //(Aishtiaq-1)
     @GetMapping("/get-Average-Ratings/{volunteerId}")
-    public ResponseEntity getTheAverageRatingForAVoluntee(@PathVariable Integer volunteerId){
+    public ResponseEntity getTheAverageRatingForAVolunteer(@PathVariable Integer volunteerId){
         volunteerRatingService.getTheAverageRatingForAVolunteer(volunteerId);
         return  ResponseEntity.status(200).body(new ApiResponse("Volunteer's average ratings fetched successfully"));
     }
