@@ -1,6 +1,7 @@
 package com.example.capstone3.Service;
 
 import com.example.capstone3.ApiResponse.ApiException;
+import com.example.capstone3.DTO.AttendanceDTO;
 import com.example.capstone3.DTO.RoleDTO;
 import com.example.capstone3.Model.*;
 import com.example.capstone3.Repository.*;
@@ -19,6 +20,7 @@ public class VolunteerApplicationService {
     private final EventRepository eventRepository;
     private final RoleRepository roleRepository;
     private final AttendanceRepository attendanceRepository;
+    private final AttendanceService attendanceService;
 
     // method to get ALL the applications
     public List<VolunteerApplication> getAllVolunteerApplications() {
@@ -79,11 +81,9 @@ public class VolunteerApplicationService {
         role.setEvent(volunteerApplication.getEvent());
         roleRepository.save(role);
 
-        Attendance attendance = new Attendance();
-        attendance.setVolunteer(volunteerApplication.getVolunteer());
-        attendance.setEvent(volunteerApplication.getEvent());
+        AttendanceDTO attendance = new AttendanceDTO(volunteerApplication.getEvent().getId(),volunteerApplication.getVolunteer().getId());
+        attendanceService.addAttendance(attendance);
 
-        attendanceRepository.save(attendance);
 
     }
 

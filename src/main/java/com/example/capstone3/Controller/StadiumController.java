@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+//bushra
 @RestController
 @RequestMapping("/api/v1/stadium")
 @RequiredArgsConstructor
@@ -36,16 +36,6 @@ public class StadiumController {
     @GetMapping("/get-by-status/{status}")
     public ResponseEntity getStadiumsByStatus(@PathVariable String status) {
         return ResponseEntity.status(200).body(stadiumService.getStadiumsByStatus(status));
-    }
-
-    @GetMapping("/get-by-capacity/{capacity}")
-    public ResponseEntity  getStadiumsByCapacity(@PathVariable Integer capacity) {
-        return ResponseEntity.status(200).body(stadiumService.getStadiumsByCapacity(capacity));
-    }
-
-    @GetMapping("/count")
-    public ResponseEntity  countStadiums() {
-        return ResponseEntity.status(200).body(stadiumService.countStadiums());
     }
 
 

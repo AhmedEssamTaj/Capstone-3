@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-
+//bushra
 @RestController
 @RequestMapping("/api/v1/event")
 @RequiredArgsConstructor
@@ -25,9 +25,26 @@ public class EventController {
         return ResponseEntity.status(200).body(eventService.getAllEvents());
     }
 
+    @GetMapping("/get-from-dates/{from}/{to}")
+    public ResponseEntity getEventById(@PathVariable LocalDate from,@PathVariable LocalDate to) {
+        return ResponseEntity.status(200).body(eventService.getEventsBetweenDates(from,to));
+    }
     @GetMapping("/get-by-id/{id}")
     public ResponseEntity getEventById(@PathVariable Integer id) {
         return ResponseEntity.status(200).body(eventService.getEventDetailsById(id));
+    }
+    @GetMapping("/get-without-role")
+    public ResponseEntity getAllEventsWithoutRole() {
+        return ResponseEntity.status(200).body(eventService.getAllEventsWithoutRole());
+    }
+    @GetMapping("/get-volunteer/{event_id}")
+    public ResponseEntity getAllVolunteersInEvent(@PathVariable Integer event_id) {
+        return ResponseEntity.status(200).body(eventService.getAllVolunteersInEvent(event_id));
+    }
+    @GetMapping("/get-date-stadium/{date}/{stadium}")
+    public ResponseEntity getEventsByDateAndStadium(@PathVariable LocalDate date,@PathVariable Integer stadium) {
+
+        return ResponseEntity.status(200).body(eventService.getEventsByDateAndStadium(stadium, date));
     }
 
     @GetMapping("/get-by-status/{status}")
@@ -35,9 +52,9 @@ public class EventController {
         return ResponseEntity.status(200).body(eventService.getEventsByStatus(status));
     }
 
-    @GetMapping("/get-by-date/{date}")
-    public ResponseEntity getEventsByDate(@PathVariable LocalDate date) {
-        return ResponseEntity.status(200).body(eventService.getEventsByDate(date));
+    @GetMapping("/get-between-date/{datefrom}/{dateto}")
+    public ResponseEntity getEventsBetweenDate(@PathVariable LocalDate datefrom, @PathVariable LocalDate dateto) {
+        return ResponseEntity.status(200).body(eventService.getEventsBetweenDates(datefrom,dateto));
     }
 
     @PostMapping("/add")
@@ -70,19 +87,14 @@ public class EventController {
         return ResponseEntity.status(200).body(new ApiResponse("Event deleted successfully"));
     }
 
-    @DeleteMapping("/delete-by-status/{status}")
-    public ResponseEntity deleteEventsByStatus(@PathVariable String status) {
-        eventService.deleteEventsByStatus(status);
-        return ResponseEntity.status(200).body(new ApiResponse("Events with status deleted successfully"));
+
+    @GetMapping("/get-upcoming")
+    public ResponseEntity getUpcomingEvents() {
+        return ResponseEntity.status(200).body(eventService.getUpcomingEvents());
     }
 
-    @GetMapping("/get-upcoming/{today}")
-    public ResponseEntity getUpcomingEvents(@PathVariable LocalDate today) {
-        return ResponseEntity.status(200).body(eventService.getUpcomingEvents(today));
-    }
-
-    @GetMapping("/get-past/{today}")
-    public ResponseEntity getPastEvents(@PathVariable LocalDate today) {
-        return ResponseEntity.status(200).body(eventService.getPastEvents(today));
+    @GetMapping("/get-past")
+    public ResponseEntity getPastEvents() {
+        return ResponseEntity.status(200).body(eventService.getPastEvents());
     }
 }

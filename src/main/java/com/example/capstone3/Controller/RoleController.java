@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+//bushra
 @RestController
 @RequestMapping("/api/v1/roles")
 @RequiredArgsConstructor
@@ -54,11 +54,7 @@ public class RoleController {
         return ResponseEntity.status(200).body(new ApiResponse("Role added successfully"));
     }
 
-    @PostMapping("/add-bulk")
-    public ResponseEntity addRolesInBulk(@RequestBody @Valid List<RoleDTO> roles) {
-        roleService.addRolesInBulk(roles);
-        return ResponseEntity.status(200).body(new ApiResponse("Roles added successfully"));
-    }
+
 
     @PutMapping("/update/{id}")
     public ResponseEntity updateRoleDetails(@PathVariable Integer id, @RequestBody @Valid RoleDTO dto) {
@@ -66,11 +62,7 @@ public class RoleController {
         return ResponseEntity.status(200).body(new ApiResponse("Role updated successfully"));
     }
 
-    @PutMapping("/update-name/{id}")
-    public ResponseEntity updateRoleName(@PathVariable Integer id, @RequestParam String name) {
-        roleService.updateRoleName(id, name);
-        return ResponseEntity.status(200).body(new ApiResponse("Role name updated successfully"));
-    }
+
 
     @PutMapping("/update-description/{id}")
     public ResponseEntity updateRoleDescription(@PathVariable Integer id, @RequestParam String description) {
@@ -84,15 +76,4 @@ public class RoleController {
         return ResponseEntity.status(200).body(new ApiResponse("Role deleted successfully"));
     }
 
-    @DeleteMapping("/delete-by-event/{eventId}")
-    public ResponseEntity deleteRolesByEvent(@PathVariable Integer eventId) {
-        roleService.deleteRolesByEvent(eventId);
-        return ResponseEntity.status(200).body(new ApiResponse("Roles associated with event deleted successfully"));
-    }
-
-    @DeleteMapping("/delete-by-volunteer/{volunteerId}")
-    public ResponseEntity deleteRolesByVolunteer(@PathVariable Integer volunteerId) {
-        roleService.deleteRolesByVolunteer(volunteerId);
-        return ResponseEntity.status(200).body(new ApiResponse("Roles associated with volunteer deleted successfully"));
-    }
 }
