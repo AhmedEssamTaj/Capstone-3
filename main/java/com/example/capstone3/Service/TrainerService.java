@@ -7,8 +7,11 @@ import com.example.capstone3.Model.Training;
 import com.example.capstone3.Repository.TrainerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -67,4 +70,14 @@ public class TrainerService {
 
         trainerRepository.delete(trainer);
     }
-}
+
+
+
+
+
+
+
+
+    }
+
+

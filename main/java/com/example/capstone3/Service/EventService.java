@@ -11,6 +11,7 @@ import com.example.capstone3.Repository.VolunteerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,6 +80,24 @@ public class EventService {
     private EventDTOout convertToDTOout(Event event) {
         return new EventDTOout(event.getName(),event.getDate(),event.getStartTime(),event.getEndTime(),event.getStatus(),event.getStadium().getName());
     }
+
+
+    //list of all upcoming (future)  events for this stadium  (Aishtiaq-4)
+    public List<Event> getUpcomingEventsForStadium(Integer stadiumId) {
+        return eventRepository.findByStadiumIdAndDateAfter(stadiumId, LocalDate.now());
+    }
+
+    // Get a list of Full Events (Aishtiaq-9)
+
+    public List<Event> getFullEvents() {
+        List<Event> fullEvents = eventRepository.findFullEvents();
+        if (fullEvents.isEmpty()) {
+            throw new RuntimeException("No full events found.");
+        }
+        return fullEvents;
+    }
+
+
 
 
 }

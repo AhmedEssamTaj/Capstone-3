@@ -27,6 +27,13 @@ public class TrainingController {
 
     }
 
+    //  get Trainer's Most Recent Upcoming Event (Aishtiaq-6)
+    @GetMapping("/{trainerId}/upcoming-event")
+    public ResponseEntity<Training> getUpcomingEvent(@PathVariable Integer trainerId) {
+        Training event = trainingService.getMostRecentUpcomingEvent(trainerId);
+        return ResponseEntity.ok(event);
+    }
+
     @PostMapping("/add")
     public ResponseEntity addVolunteer(@RequestBody @Valid Training training){
         trainingService.addTraining(training);

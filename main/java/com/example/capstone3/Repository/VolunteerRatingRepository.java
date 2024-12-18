@@ -13,5 +13,10 @@ public interface  VolunteerRatingRepository extends JpaRepository<VolunteerRatin
 
     List<VolunteerRating> findVolunteerRatingByVolunteerId(Integer volunteerId);
 
+
+
+
+
+
 }
 

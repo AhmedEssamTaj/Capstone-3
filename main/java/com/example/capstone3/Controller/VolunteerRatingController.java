@@ -48,4 +48,13 @@ public class VolunteerRatingController {
         volunteerRatingService.getTheAverageRatingForAVolunteer(volunteerId);
         return  ResponseEntity.status(200).body(new ApiResponse("Volunteer's average ratings fetched successfully"));
     }
+
+    //(Aishtiaq-5)
+    @GetMapping("/get-Average-Ratings-Higher/{minAverageRating}")
+    public ResponseEntity getVolunteersWithAverageRatingHigherThan(@PathVariable double minAverageRating){
+        volunteerRatingService.getVolunteersWithAverageRatingHigherThan(minAverageRating);
+        return ResponseEntity.status(200).body(new ApiResponse("All volunteers who received an above average rating were recruited") );
+    }
+
+
 }

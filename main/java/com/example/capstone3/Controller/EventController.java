@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/event")
@@ -42,4 +44,21 @@ public class EventController {
 
         return ResponseEntity.status(200).body(eventService.getEventById(id));
     }
+
+    //list of all upcoming (future)  events for this stadium  (Aishtiaq-4)
+
+    @GetMapping("/stadium-upcoming-Events/{stadiumId}")
+    public ResponseEntity<List<Event>> getUpcomingEventsForStadium(@PathVariable Integer stadiumId) {
+        List<Event> events = eventService.getUpcomingEventsForStadium(stadiumId);
+        return ResponseEntity.status(200).body(events);
+    }
+
+
+    // Get a list of Full Events (Aishtiaq-9)
+    @GetMapping("/full")
+    public ResponseEntity<List<Event>> getFullEvents() {
+        List<Event> events = eventService.getFullEvents();
+        return ResponseEntity.ok(events);
+    }
+
 }

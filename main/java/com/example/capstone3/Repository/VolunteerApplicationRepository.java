@@ -12,4 +12,6 @@ public interface VolunteerApplicationRepository extends JpaRepository<VolunteerA
     VolunteerApplication findVolunteerApplicationById(Integer id);
 
     List<VolunteerApplication> findVolunteerApplicationByVolunteerId(Integer volunteerId);
+
+
 }
