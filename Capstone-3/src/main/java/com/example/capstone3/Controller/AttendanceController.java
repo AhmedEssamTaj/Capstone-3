@@ -9,37 +9,69 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/attendance")
 @RequiredArgsConstructor
+
+// Bushra
+
 public class AttendanceController {
     private final AttendanceService attendanceService;
 
     @GetMapping("/get-all")
-    public ResponseEntity getAll() {
-        return ResponseEntity.status(200).body(attendanceService.getAllAttendances());
+    public ResponseEntity getAllAttendances() {
+        List<AttendanceDTOout> attendances = attendanceService.getAllAttendances();
+        return ResponseEntity.status(200).body(attendances);
     }
 
+    @GetMapping("/get-by-id/{id}")
+    public ResponseEntity getAttendanceById(@PathVariable Integer id) {
+        AttendanceDTOout attendance = attendanceService.getAttendanceById(id);
+        return ResponseEntity.status(200).body(attendance);
+    }
 
-    @PutMapping("/Absent/{id}")
-    public ResponseEntity updateAttendanceAbsent(@PathVariable Integer id) {
-        attendanceService.updateAttendanceAbsent(id);
-        return ResponseEntity.status(200).body(new ApiResponse("attendance updated successfully"));
+    @GetMapping("/get-by-event/{eventId}")
+    public ResponseEntity getAttendancesByEvent(@PathVariable Integer eventId) {
+        List<AttendanceDTOout> attendances = attendanceService.getAttendancesByEvent(eventId);
+        return ResponseEntity.status(200).body(attendances);
+    }
+    @GetMapping("/get-Absent-count/{volunteer_Id}")
+    public ResponseEntity getAttendanceCountAbsent(@PathVariable Integer volunteer_Id) {
+        return ResponseEntity.status(200).body((new ApiResponse("the total Absent "+attendanceService.getAttendanceCountAbsent(volunteer_Id))));
+    }
+
+    @GetMapping("/get-by-volunteer/{volunteerId}")
+    public ResponseEntity getAttendancesByVolunteer(@PathVariable Integer volunteerId) {
+        List<AttendanceDTOout> attendances = attendanceService.getAttendancesByVolunteer(volunteerId);
+        return ResponseEntity.status(200).body(attendances);
+    }
+
+    // this is for CRUD only but it is not actually used
+    @PostMapping("/add")
+    public ResponseEntity addAttendance(@RequestBody @Valid AttendanceDTO attendanceDTO) {
+        attendanceService.addAttendance(attendanceDTO);
+        return ResponseEntity.status(201).body(new ApiResponse("Attendance added successfully"));
+    }
+
+    @PutMapping("/absent/{volunteerId}/{eventId}")
+    public ResponseEntity absentAttendance(@PathVariable Integer volunteerId, @PathVariable Integer eventId) {
+        attendanceService.updateAttendanceStatusAbsent(volunteerId, eventId);
+        return ResponseEntity.status(201).body(new ApiResponse("Attendance absent successfully"));
     }
 
     // endpoint to mark the volunteer check in time  --- Bushra (1)
-    @PutMapping("/update-check-in/{volunteer_id}/{event_id}")
-    public ResponseEntity updateCheckIn(@PathVariable Integer volunteer_id,@PathVariable Integer event_id, @RequestBody @Valid LocalTime checkIn) {
-        attendanceService.updateAttendanceCheckIn(volunteer_id,event_id, checkIn);
-        return ResponseEntity.status(200).body(new ApiResponse("record updated"));
+    @PutMapping("/mark-check-in/{volunteer_id}/{event_id}")
+    public ResponseEntity markAttendanceCheckIn(@PathVariable Integer volunteer_id, @PathVariable Integer event_id) {
+        attendanceService.markAttendanceCheckedIn(volunteer_id, event_id);
+        return ResponseEntity.status(200).body(new ApiResponse("Attendance marked as checked-in"));
     }
 
-    // endpoint to mark the volunteer check out time   --- Bushra (2)
-    @PutMapping("/update-check-out/{volunteer_id}/{event_id}")
-    public ResponseEntity updateCheckOut(@PathVariable Integer volunteer_id,@PathVariable Integer event_id, @RequestBody @Valid LocalTime checkOut) {
-        attendanceService.updateAttendanceCheckOut(volunteer_id,event_id, checkOut);
-        return ResponseEntity.status(200).body(new ApiResponse("record updated"));
+    @PutMapping("/mark-check-out/{volunteer_id}/{event_id}")
+    public ResponseEntity markAttendanceCheckOut(@PathVariable Integer volunteer_id, @PathVariable Integer event_id) {
+        attendanceService.markAttendanceCheckedOut(volunteer_id, event_id);
+        return ResponseEntity.status(200).body(new ApiResponse("Attendance marked as checked-out"));
     }
 
     @DeleteMapping("/delete/{id}")
@@ -48,8 +80,18 @@ public class AttendanceController {
         return ResponseEntity.status(200).body("Attendance deleted");
     }
 
-    @GetMapping("/get-by-id/{id}")
-    public ResponseEntity getById(@PathVariable Integer id) {
-        return ResponseEntity.status(200).body(attendanceService.getAttendanceById(id));
+    @DeleteMapping("/delete/{volunteer_id}/{event_id}")
+    public ResponseEntity deleteAttendanceById(@PathVariable Integer volunteer_id, @PathVariable Integer event_id) {
+        attendanceService.deleteAttendanceById(volunteer_id, event_id);
+        return ResponseEntity.status(200).body(new ApiResponse("Attendance deleted successfully"));
     }
+
+
+    //(Aishtiaq-2)
+    @GetMapping("/findReplacement/{eventId}/{absentVolunteerId}")
+    public ResponseEntity findReplacement(@PathVariable Integer eventId, @PathVariable Integer absentVolunteerId) {
+        attendanceService.findReplacement(eventId, absentVolunteerId);
+        return ResponseEntity.status(200).body(new ApiResponse("Replacement completed successfully"));
+    }
+
 }

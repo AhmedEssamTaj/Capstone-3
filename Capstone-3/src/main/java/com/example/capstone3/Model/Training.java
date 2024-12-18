@@ -18,6 +18,9 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+
+// Aishtiaq
+
 public class Training {
 
     @Id

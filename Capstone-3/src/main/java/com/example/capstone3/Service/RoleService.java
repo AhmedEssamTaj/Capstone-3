@@ -17,67 +17,105 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+
+// Bushra
+
 public class RoleService {
     private final RoleRepository roleRepository;
     private final EventRepository eventRepository;
     private final VolunteerRepository volunteerRepository;
 
     public RoleDTOout getRoleById(Integer id) {
-        Role role = roleRepository.findRoleById(id);
-        if (role == null) {
-            throw new ApiException("Role not found");
-        }
+        if (roleRepository.findById(id).isPresent()) {throw new ApiException("Role not found");}
+        Role role = findRole(id);
         return convertToDTOout(role);
     }
 
-    public List<RoleDTOout> getAllRoleDTOs() {
+    public List<RoleDTOout> getAllRoles() {
         List<Role> roles = roleRepository.findAll();
-        List<RoleDTOout> roleDTOs = new ArrayList<>();
-        for (Role r : roles) {
-            roleDTOs.add(convertToDTOout(r));
-        }
-        return roleDTOs;
+        if (roles.isEmpty()) throw new ApiException("No roles found");
+        return convertToDTOList(roles);
     }
 
-    public void addRole(RoleDTO role) {
-        Role new_role=new Role();
-        new_role.setName(role.getName());
-        new_role.setDescription(role.getDescription());
-        Event event = eventRepository.findEventById(role.getEvent_id());
-        Volunteer volunteer = volunteerRepository.findVolunteerById(role.getVolunteer_id());
-        if (volunteer == null || event == null) {
-            throw new ApiException("Volunteer or event not found");
-        }
-        new_role.setEvent(eventRepository.findEventById(role.getEvent_id()));
-        new_role.setVolunteer(volunteerRepository.findVolunteerById(role.getVolunteer_id()));
-        roleRepository.save(new_role);
+    public List<RoleDTOout> getRolesByEventId(Integer eventId) {
+        if (eventRepository.findEventById(eventId)==null) {throw new ApiException("Event not found");}
+        Event event = eventRepository.findEventById(eventId);
+        List<Role> roles = roleRepository.findByEvent(event);
+        if (roles.isEmpty()) throw new ApiException("No roles found for this event");
+        return convertToDTOList(roles);
+    }
+    public List<RoleDTOout> getRolesByVolunteerId(Integer volunteerId) {
+        if (volunteerRepository.findVolunteerById(volunteerId)==null) {throw new ApiException("Volunteer not found");}
+        Volunteer volunteer = volunteerRepository.findVolunteerById(volunteerId);
+        List<Role> roles = roleRepository.findByVolunteer(volunteer);
+        if (roles.isEmpty()) throw new ApiException("No roles found for this volunteer");
+        return convertToDTOList(roles);
+    }
+    public long countRoles() {
+        long count = roleRepository.count();
+        if (count == 0) throw new ApiException("No roles found in the system");
+        return count;
     }
 
-    public void deleteRole(Integer id) {
-        Role role = roleRepository.findRoleById(id);
-        if (role == null) {
-            throw new ApiException("Role not found");
-        }
-        if (role.getVolunteer()!=null){
-            throw new ApiException("Role cant be deleted it has volunteer");
+    public void addRole(RoleDTO dto) {
+        if (volunteerRepository.findVolunteerById(dto.getVolunteer_id())==null) {throw new ApiException("Volunteer not found");}
+        if (eventRepository.findEventById(dto.getEvent_id())==null) {throw new ApiException("Event not found");}
+        Role role = createRoleFromDTO(dto);
+        roleRepository.save(role);
+    }
 
-        }
+    public void updateRoleDescription(Integer id, String description) {
+        if (roleRepository.findRoleById(id)==null) {throw new ApiException("Role not found");}
+        Role role = findRole(id);
+        if (description == null || description.trim().isEmpty())
+            throw new ApiException("Description cannot be null or empty");
+        role.setDescription(description);
+        roleRepository.save(role);
+    }
+
+    public void updateRoleDetails(Integer id, RoleDTO dto) {
+        if (roleRepository.findRoleById(id)==null) {throw new ApiException("Role not found");}
+        if (volunteerRepository.findVolunteerById(dto.getVolunteer_id())==null) {throw new ApiException("Volunteer not found");}
+        if (eventRepository.findEventById(dto.getEvent_id())==null) {throw new ApiException("Event not found");}
+        Role role = findRole(id);
+        role.setName(dto.getName());
+        role.setDescription(dto.getDescription());
+        role.setEvent(eventRepository.findEventById(dto.getEvent_id()));
+        role.setVolunteer(volunteerRepository.findVolunteerById(dto.getVolunteer_id()));
+        roleRepository.save(role);
+    }
+
+    public void deleteRoleById(Integer id) {
+        if (roleRepository.findRoleById(id)==null) {throw new ApiException("Role not found");}
+        Role role = findRole(id);
         roleRepository.delete(role);
     }
 
-    public void updateRole(Integer id, RoleDTO updatedRole) {
-        Role role =  roleRepository.findRoleById(id);
-        if (role == null) {
-            throw new ApiException("Role not found");
-        }
-
-        role.setName(updatedRole.getName());
-        role.setDescription(updatedRole.getDescription());
-        role.setEvent(eventRepository.findEventById(updatedRole.getEvent_id()));
-        role.setVolunteer(volunteerRepository.findVolunteerById(updatedRole.getVolunteer_id()));
-        roleRepository.save(role);
+    private Role findRole(Integer id) {
+        if (id == null) throw new ApiException("Role ID cannot be null");
+        Role role = roleRepository.findRoleById(id);
+        if (role == null) throw new ApiException("Role not found");
+        return role;
     }
+
+    private Role createRoleFromDTO(RoleDTO dto) {
+        Role role = new Role();
+        role.setName(dto.getName());
+        role.setDescription(dto.getDescription());
+        role.setEvent(eventRepository.findEventById(dto.getEvent_id()));
+        role.setVolunteer(volunteerRepository.findVolunteerById(dto.getVolunteer_id()));
+        return role;
+    }
+
     private RoleDTOout convertToDTOout(Role role) {
-        return new RoleDTOout(role.getName(),role.getVolunteer().getName(),role.getEvent().getName(),role.getDescription());
+        return new RoleDTOout(role.getName(), role.getVolunteer().getName(), role.getEvent().getName(),
+                role.getDescription());
+    }
+    private List<RoleDTOout> convertToDTOList(List<Role> roles) {
+        List<RoleDTOout> list = new ArrayList<>();
+        for (Role r : roles) {
+            list.add(convertToDTOout(r));
+        }
+        return list;
     }
 }

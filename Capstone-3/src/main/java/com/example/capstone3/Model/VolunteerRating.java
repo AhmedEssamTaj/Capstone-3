@@ -19,6 +19,9 @@ import java.util.Set;
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = {"volunteer_id", "event_id"}) // this to make it so that only one rating per event is allowed for a volunteer
 })
+
+// Ahmed
+
 public class VolunteerRating {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

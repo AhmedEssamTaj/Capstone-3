@@ -1,10 +1,12 @@
 package com.example.capstone3.Model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -13,6 +15,9 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+
+// Aishtiaq
+
 public class Trainer {
 
     @Id
@@ -44,6 +49,7 @@ public class Trainer {
     private Integer experienceYears;
 
     @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL)
-    private Set<Training> trainings;
+    @JsonIgnore
+    private Set<Training> trainings = new HashSet<>();
 
 }

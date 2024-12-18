@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/volunteer-application")
 @AllArgsConstructor
+
+// Aishtiaq
+
 public class VolunteerApplicationController {
 
     private final VolunteerApplicationService volunteerApplicationService;
@@ -60,5 +63,19 @@ public class VolunteerApplicationController {
         volunteerApplicationService.rejcetApplication(volunteerApplicationId);
         return ResponseEntity.status(200).body(new ApiResponse("Successfully rejected volunteer application"));
     }
+
+    // Endpoint to get all volunteers applications for an event --- Ahmed (8) ---
+    @GetMapping("/get-event/{eventId}")
+    public ResponseEntity getVolunteerApplicationsByEventId (@PathVariable Integer eventId) {
+        return ResponseEntity.status(200).body(volunteerApplicationService.getVolunteerApplicationsByEventId(eventId));
+    }
+
+    // Endpoint to count number of times volunteer was accepted in a event
+    @GetMapping("/count-approved/{volunteerId}")
+    public  ResponseEntity getNumberOfApprovedEventsForVolunteer (@PathVariable Integer volunteerId) {
+        return ResponseEntity.status(200).body(new ApiResponse("this volunteer accepted in "+ volunteerApplicationService.getNumberOfApprovedEventsForVolunteer(volunteerId)));
+    }
+
+
 
 }

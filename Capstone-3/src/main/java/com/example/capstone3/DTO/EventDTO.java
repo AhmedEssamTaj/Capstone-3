@@ -15,8 +15,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @Data
 public class EventDTO {
-
-    private Integer id;
+    
     @NotEmpty(message = "Title cannot be empty")
     private String name;
     @NotNull(message = "Date cannot be null")
@@ -32,7 +31,7 @@ public class EventDTO {
     @NotNull(message = "Stadium cannot be null")
     private Integer stadium_id;
     @NotEmpty(message = "Status cannot be empty")
-    @Pattern(regexp = "Run|Ended", message = "Status must be either 'Run' or 'Ended'")
+    @Pattern(regexp = "^(Run|Ended|Hold|Accept request)+$", message = "Status must be Run or Ended or Hold or Accept request")
     private String status;
 
 

@@ -12,6 +12,9 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
+
+// Ahmed
+
 public class VolunteerSkillsService {
     private VolunteerSkillsRepository volunteerSkillsRepository;
     private final VolunteerRepository volunteerRepository;
@@ -49,7 +52,7 @@ public class VolunteerSkillsService {
         if (volunteerSkills1 == null) {
             throw new ApiException("no volunteer skill was found");
         }
-        volunteerSkills1.setDescription(volunteerSkills.getDescription());
+        volunteerSkills1.setSkillType(volunteerSkills.getSkillType());
         volunteerSkillsRepository.save(volunteerSkills1);
 
     }
@@ -61,6 +64,55 @@ public class VolunteerSkillsService {
             throw new ApiException("no volunteer skill was found");
         }
         volunteerSkillsRepository.delete(volunteerSkills);
+    }
+
+    // method compares the skills of volunteers (Aishtiaq-3)
+    public String CompareSkillsOfVolunteers(Integer volunteerId1, Integer volunteerId2) {
+        Volunteer volunteer1 = volunteerRepository.findVolunteerById(volunteerId1);
+        Volunteer volunteer2 = volunteerRepository.findVolunteerById(volunteerId2);
+
+        if (volunteer1 == null || volunteer2 == null) {
+            throw new ApiException("not found volunteer");
+        }
+
+        List<VolunteerSkills> volunteerSkills1 = volunteerSkillsRepository.findVolunteerSkillsByVolunteerId(volunteerId1);
+        List<VolunteerSkills> volunteerSkills2 = volunteerSkillsRepository.findVolunteerSkillsByVolunteerId(volunteerId2);
+
+        if (volunteerSkills1.isEmpty() && volunteerSkills2.isEmpty()) {
+            return "Both volunteers have no skills.";
+        } else if (volunteerSkills1.isEmpty()) {
+            return "Volunteer " + volunteer1.getId() + " has no skills.";
+        } else if (volunteerSkills2.isEmpty()) {
+            return "Volunteer " + volunteer2.getId() + " has no skills.";
+        }
+
+        for (VolunteerSkills skill1 : volunteerSkills1) {
+            boolean found = false;
+            for (VolunteerSkills skill2 : volunteerSkills2) {
+                if (skill1.getSkillType().equals(skill2.getSkillType())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                return "Volunteer " + volunteer1.getId() + " has a unique skill: " + skill1.getSkillType();
+            }
+        }
+
+        for (VolunteerSkills skill2 : volunteerSkills2) {
+            boolean found = false;
+            for (VolunteerSkills skill1 : volunteerSkills1) {
+                if (skill2.getSkillType().equals(skill1.getSkillType())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                return "Volunteer " + volunteer2.getId() + " has a unique skill: " + skill2.getSkillType();
+            }
+        }
+
+        return "Both volunteers have the same skills.";
     }
 
 }

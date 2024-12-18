@@ -11,20 +11,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/Trainer")
+@RequestMapping("/api/v1/trainer")
 @RequiredArgsConstructor
+
+// Aishtiaq
+
 public class TrainerController {
 
     private final TrainerService trainerService;
-
-
 
     @GetMapping("/get")
     public ResponseEntity getAllTrainer(){
         return ResponseEntity.status(200).body(trainerService.getAllTraining());
     }
 
-    @GetMapping("/get-Trainer-DTO")
+    @GetMapping("/get-trainer-dto")
     public ResponseEntity getTrainerDTO(){
         return ResponseEntity.status(200).body(trainerService.getTrainerDTO());
     }
@@ -51,5 +52,18 @@ public class TrainerController {
 
     }
 
+    // ahmed (6)
+    @PutMapping("/assign-trainer-training/{trainerId}/{trainingId}")
+    public ResponseEntity assignTrainerToTraining (@PathVariable Integer trainerId, @PathVariable Integer trainingId){
+        trainerService.assignTrainerToTraining(trainerId, trainingId);
+        return ResponseEntity.status(200).body("Trainer assigned successfully");
+    }
+
+    // ahmed (7)
+    @PutMapping("/close-training/{trainerId}/{trainingId}")
+    public ResponseEntity closeTraining (@PathVariable Integer trainerId, @PathVariable Integer trainingId){
+        trainerService.closeTraining(trainerId, trainingId);
+        return ResponseEntity.status(200).body("Trainer closed training successfully");
+    }
 
 }

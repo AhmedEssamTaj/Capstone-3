@@ -14,6 +14,9 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+
+// Aishtiaq
+
 public class TrainingService {
 
     private final TrainingRepository trainingRepository;
@@ -75,5 +78,15 @@ public class TrainingService {
         }
 
         trainingRepository.delete(training1);
+    }
+
+    //  get Trainer's Most Recent Upcoming Event (Aishtiaq-6)
+    public Training getMostRecentUpcomingEvent(Integer trainerId) {
+        List<Training> upcomingEvents = trainingRepository.findUpcomingEventsByTrainerId(trainerId);
+
+        if (upcomingEvents.isEmpty()) {
+            throw new RuntimeException("No upcoming events found for trainer ID: " + trainerId);
+        }
+        return upcomingEvents.get(0);
     }
 }

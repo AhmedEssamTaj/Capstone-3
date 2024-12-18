@@ -13,17 +13,24 @@ import java.time.LocalTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"event_id", "volunteer_id"})
+})
+
+// Bushra
+
 public class Attendance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne
-    @JoinColumn(name = "event_id", referencedColumnName = "id")
+    @JoinColumn(name = "event_id", referencedColumnName = "id", nullable = false)
 //    @NotNull(message = "Event cannot be null")
     private Event event;
     @ManyToOne
 //    @JoinColumn(name = "volunteer_id", referencedColumnName = "id")
 //    @NotEmpty(message = "Volunteer cannot be empty")
+    @JoinColumn(name = "volunteer_id", referencedColumnName = "id", nullable = false)
     @JsonIgnore
     private Volunteer volunteer;
 

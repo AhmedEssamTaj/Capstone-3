@@ -8,9 +8,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/volunteer")
 @RequiredArgsConstructor
+
+// Ahmed
+
 public class VolunteerController {
 
     private final VolunteerService volunteerService;
@@ -48,9 +53,38 @@ public class VolunteerController {
 
     }
 
+    // ahmed (5)
     @PutMapping("/assign-training/{volunteerId}/{trainingId}")
     public ResponseEntity assignVolunteerToTraining (@PathVariable Integer volunteerId,@PathVariable Integer trainingId){
         volunteerService.assignVolunteerToTraining(volunteerId,trainingId);
         return ResponseEntity.status(200).body("Volunteer assigned successfully");
+    }
+
+    // List of Volunteers Who Did Not Apply for Any Events (Aishtiag-7)
+    @GetMapping("/without-applications")
+    public ResponseEntity<List<Volunteer>> getVolunteersWithoutApplications() {
+        List<Volunteer> volunteers = volunteerService.getVolunteersWithoutApplications();
+        return ResponseEntity.ok(volunteers);
+    }
+
+    //Get a list of trained volunteers only (Aishtiaq-8)
+    @GetMapping("/trained")
+    public ResponseEntity<List<Volunteer>> getTrainedVolunteers() {
+        List<Volunteer> volunteers = volunteerService.getTrainedVolunteers();
+        return ResponseEntity.ok(volunteers);
+    }
+
+    //Returns a list of volunteers who did not attend an event (inactive volunteers)  (Aishtiaq-10)
+
+    @GetMapping("/inactive")
+    public ResponseEntity<List<Volunteer>> getVolunteersWithNoAttendance() {
+        List<Volunteer> volunteers = volunteerService.getVolunteersWithNoAttendance();
+        return ResponseEntity.ok(volunteers);
+    }
+
+    @PutMapping("/update-trained/{id}")
+    public ResponseEntity istrained (@PathVariable Integer id){
+        volunteerService.istrained(id);
+        return ResponseEntity.status(200).body("Volunteer istrained successfully");
     }
 }

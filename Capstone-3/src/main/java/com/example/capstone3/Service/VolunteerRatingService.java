@@ -17,6 +17,9 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
+
+// Ahmed
+
 public class VolunteerRatingService {
 
     private final VolunteerRatingRepository volunteerRatingRepository;
@@ -100,8 +103,36 @@ public class VolunteerRatingService {
 
        }
 
+    // method volunteers with average rating higher than or equal (Aishtiaq-5)
+    public List<Volunteer> getVolunteersWithAverageRatingHigherThan(double minAverageRating) {
+        List<Volunteer> allVolunteers = volunteerRepository.findAll();
+        List<Volunteer> qualifiedVolunteers = new ArrayList<>();
 
+        for (Volunteer volunteer : allVolunteers) {
+            List<VolunteerRating> volunteerRatings = volunteerRatingRepository.findVolunteerRatingByVolunteerId(volunteer.getId());
+
+            if (volunteerRatings != null && !volunteerRatings.isEmpty()) {
+                double averageRating = calculateAverageRating(volunteerRatings);
+                if (averageRating >= minAverageRating) {
+                    qualifiedVolunteers.add(volunteer);
+                }
+            }
+        }
+
+        return qualifiedVolunteers;
     }
+
+    private double calculateAverageRating(List<VolunteerRating> ratings) {
+        int sum = 0;
+        for (VolunteerRating rating : ratings) {
+            sum += rating.getRating();
+        }
+        return (double) sum / ratings.size();
+    }
+}
+
+
+
 
 
 

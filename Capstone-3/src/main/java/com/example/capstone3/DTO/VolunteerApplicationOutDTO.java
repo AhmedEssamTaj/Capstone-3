@@ -21,6 +21,10 @@ public class VolunteerApplicationOutDTO {
 
     private String questionnaireUrl;
 
+    private String volunteerName;
+
+    private List<VolunteerSkillsDTO> volunteerSkillsDTOS;
+
 //    private List<VolunteerDTO> volunteerDTO;
 //    private List<EventDTO>eventDTOS;
 

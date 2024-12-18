@@ -18,14 +18,14 @@ import java.time.LocalTime;
 public class AttendanceDTO {
 
 
-    private Integer id;
+//    private Integer id;
     @NotNull(message = "Event cannot be null")
     private Integer event_id;
     @NotEmpty(message = "Volunteer cannot be empty")
     private Integer volunteer_id;
-    private LocalTime checkIn;
-    private LocalTime checkOut;
-    @NotEmpty(message = "Status cannot be empty")
-    @Pattern(regexp = "Checked-in|Checked-out|Absent", message = "Status must be either 'Checked-in', 'Checked-out', or 'Absent'")
-    private String status;
+//    private LocalTime checkIn;
+//    private LocalTime checkOut;
+//    @NotEmpty(message = "Status cannot be empty")
+//    @Pattern(regexp = "Checked-in|Checked-out|Absent", message = "Status must be either 'Checked-in', 'Checked-out', or 'Absent'")
+//    private String status;
 }

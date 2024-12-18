@@ -17,6 +17,9 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+
+// Bushra
+
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,7 +56,8 @@ public class Event {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
     private Set<Volunteer> volunteers;
 
-
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
+    private Set<Role> roles;
 
     @Column(columnDefinition = "varchar(20) default 'Hold'")
     @NotEmpty(message = "Status cannot be empty")

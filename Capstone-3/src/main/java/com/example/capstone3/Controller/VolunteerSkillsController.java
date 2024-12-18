@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/volunteer-skills")
 @AllArgsConstructor
+
+// Ahmed
+
 public class VolunteerSkillsController {
 
     private final VolunteerSkillsService volunteerSkillsService;
@@ -43,7 +46,12 @@ public class VolunteerSkillsController {
         return ResponseEntity.status(200).body(volunteerSkillsService.getVolunteerSkillsByVolunteerId(volunteerId));
     }
 
-
+    //(Aishtiaq-3)
+    @GetMapping("Compare-skills-of-volunteers/{volunteerId1}/{volunteerId2}")
+    public ResponseEntity CompareSkillsOfVolunteers(@PathVariable Integer volunteerId1, @PathVariable Integer volunteerId2)
+    {volunteerSkillsService.CompareSkillsOfVolunteers(volunteerId1, volunteerId2);
+        return ResponseEntity.status(200).body(new ApiResponse("The volunteer Compare Progress"));
+    }
 
 
 }

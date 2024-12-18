@@ -16,6 +16,9 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+
+// Ahmed
+
 public class VolunteerService {
 
     private final VolunteerRepository volunteerRepository;
@@ -96,12 +99,48 @@ public class VolunteerService {
         if (training.getVolunteers().size() >= training.getCapacity()) {
             throw new ApiException("Training session is at full capacity. Please create a new session.");
         }
-        training.getVolunteers().add(volunteer);
+        //training.getVolunteers().add(volunteer);
+        volunteer.setTraining(training);
         training.setEnrolledVolunteers(training.getEnrolledVolunteers()+1);
         trainingRepository.save(training);
 
-        volunteer.setTraining(training);
+//        volunteer.setTraining(training);
         volunteerRepository.save(volunteer);
 
+    }
+
+    // List of Volunteers Who Did Not Apply for Any Events (Aishtiag-7)
+
+    public List<Volunteer> getVolunteersWithoutApplications() {
+        return volunteerRepository.findVolunteersWithoutApplications();
+    }
+
+    //Get a list of trained volunteers only (Aishtiaq-8)
+
+    public List<Volunteer> getTrainedVolunteers() {
+        List<Volunteer> trainedVolunteers = volunteerRepository.findTrainedVolunteers();
+        if (trainedVolunteers.isEmpty()) {
+            throw new RuntimeException("No trained volunteers found.");
+        }
+        return trainedVolunteers;
+    }
+
+    //Returns a list of volunteers who did not attend an event (inactive volunteers)  (Aishtiaq-10)
+
+    public List<Volunteer> getVolunteersWithNoAttendance() {
+        List<Volunteer> inactiveVolunteers = volunteerRepository.findVolunteersWithNoAttendance();
+        if (inactiveVolunteers.isEmpty()) {
+            throw new RuntimeException("No inactive volunteers found.");
+        }
+        return inactiveVolunteers;
+    }
+
+    public void istrained (Integer volunteerId){
+        Volunteer volunteer = volunteerRepository.findVolunteerById(volunteerId);
+        if (volunteer == null) {
+            throw new ApiException("not found Volunteer");
+        }
+        volunteer.setTrained(true);
+        volunteerRepository.save(volunteer);
     }
 }

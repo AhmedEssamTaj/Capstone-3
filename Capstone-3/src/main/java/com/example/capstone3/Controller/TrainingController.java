@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/training")
 @RequiredArgsConstructor
+
+// Aishtiaq
+
 public class TrainingController {
 
     private final TrainingService trainingService;
@@ -25,6 +28,13 @@ public class TrainingController {
     public ResponseEntity getTrainingDTO(){
         return ResponseEntity.status(200).body(trainingService.getTrainingDTO());
 
+    }
+
+    //  get Trainer's Most Recent Upcoming Event (Aishtiaq-6)
+    @GetMapping("/{trainerId}/upcoming-event")
+    public ResponseEntity<Training> getUpcomingEvent(@PathVariable Integer trainerId) {
+        Training event = trainingService.getMostRecentUpcomingEvent(trainerId);
+        return ResponseEntity.ok(event);
     }
 
     @PostMapping("/add")

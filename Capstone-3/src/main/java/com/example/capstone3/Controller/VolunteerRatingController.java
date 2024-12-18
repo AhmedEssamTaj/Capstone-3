@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/volunteer-rating")
 @AllArgsConstructor
+
+// Ahmed
+
 public class VolunteerRatingController {
 
     private final VolunteerRatingService volunteerRatingService;
@@ -38,6 +41,8 @@ public class VolunteerRatingController {
     }
 
     // =========================== ========================= ===================== ====================
+
+    // Ahmed (4)
     @GetMapping("/get-volunteer/{volunteerId}")
     public ResponseEntity getAllRatingByVolunteer (@PathVariable Integer volunteerId) {
         return ResponseEntity.status(200).body(volunteerRatingService.getAllVolunteerRatingByVolunteerId(volunteerId));
@@ -47,5 +52,12 @@ public class VolunteerRatingController {
     @GetMapping("/get-average-volunteer/{volunteerId}")
     public ResponseEntity averageRatingForVolunteer(@PathVariable Integer volunteerId) {
         return ResponseEntity.status(200).body(volunteerRatingService.volunteersByTheHighestAverageOfRatings(volunteerId));
+    }
+
+    //(Aishtiaq-5)
+    @GetMapping("/get-Average-Ratings-Higher/{minAverageRating}")
+    public ResponseEntity getVolunteersWithAverageRatingHigherThan(@PathVariable double minAverageRating){
+        volunteerRatingService.getVolunteersWithAverageRatingHigherThan(minAverageRating);
+        return ResponseEntity.status(200).body(new ApiResponse("All volunteers who received an above average rating were recruited") );
     }
 }
